@@ -1,17 +1,460 @@
 ---
-
+import Layout from '../layouts/Layout.astro';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout
+  title="Flight Compensation Checker"
+  description="Was your flight delayed or cancelled? Check if you're owed up to €600 under EU261, UK261, APPR and more. Free, instant, no signup."
+>
+  <!-- HERO -->
+  <section class="hero bg-grid bg-grid-masked bg-glow">
+    <div class="container hero-inner">
+      <h1 class="hero-title">Flight Compensation Checker</h1>
+      <p class="hero-tagline">
+        Was your flight delayed or cancelled? Check if you're owed up to
+        <span class="amount">€600</span> under EU261, UK261, APPR and more.
+      </p>
+
+      <div class="hero-badges">
+        <span class="badge">
+          <svg class="badge-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          Free
+        </span>
+        <span class="badge">
+          <svg class="badge-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          Instant
+        </span>
+        <span class="badge">
+          <svg class="badge-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          No signup
+        </span>
+      </div>
+
+      <a href="#checker" class="btn btn-primary btn-lg">Check My Flight</a>
+
+      <p class="hero-footnote">
+        Covers 6 regulations worldwide · Updated April 2026
+      </p>
+    </div>
+  </section>
+
+  <!-- WHO CAN CLAIM -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">When you may be owed compensation</h2>
+      <p class="section-subtitle">
+        If any of these happened to your flight, you may have the right to cash compensation.
+      </p>
+
+      <div class="cards">
+        <article class="card">
+          <div class="card-icon" aria-hidden="true">⏱</div>
+          <h3 class="card-title">Delayed 3+ hours</h3>
+          <p class="card-text">
+            Long delays at arrival can entitle you up to <span class="amount">€600</span> under EU261, UK261, or equivalent law.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-icon" aria-hidden="true">✕</div>
+          <h3 class="card-title">Cancelled flight</h3>
+          <p class="card-text">
+            Short-notice cancellations with no reasonable rerouting are often compensable in cash, not just a refund.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="card-icon" aria-hidden="true">↯</div>
+          <h3 class="card-title">Denied boarding</h3>
+          <p class="card-text">
+            Involuntary denied boarding (overbooking) usually triggers full compensation regardless of delay.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- REGULATIONS COVERED -->
+  <section class="section section-alt">
+    <div class="container">
+      <h2 class="section-title">6 regulations, one checker</h2>
+      <p class="section-subtitle">
+        We evaluate your flight against every major passenger-rights law worldwide.
+      </p>
+
+      <ul class="reg-grid">
+        <li class="reg-item">
+          <span class="reg-name">EU261</span>
+          <span class="reg-detail">EU flights · up to <span class="amount">€600</span></span>
+        </li>
+        <li class="reg-item">
+          <span class="reg-name">UK261</span>
+          <span class="reg-detail">UK flights · up to <span class="amount">£520</span></span>
+        </li>
+        <li class="reg-item">
+          <span class="reg-name">APPR</span>
+          <span class="reg-detail">Canada · up to <span class="amount">CAD $1,000</span></span>
+        </li>
+        <li class="reg-item">
+          <span class="reg-name">Montreal Convention</span>
+          <span class="reg-detail">International · up to <span class="amount">~$1,700</span></span>
+        </li>
+        <li class="reg-item">
+          <span class="reg-name">ANAC 400/2022</span>
+          <span class="reg-detail">Brazil flights · varies</span>
+        </li>
+        <li class="reg-item">
+          <span class="reg-name">Israel Aviation Services Law</span>
+          <span class="reg-detail">Israel flights · up to <span class="amount">ILS 3,180</span></span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- CHECKER PLACEHOLDER (Step 1-5에서 교체) -->
+  <section id="checker" class="section">
+    <div class="container">
+      <h2 class="section-title">Check your flight</h2>
+      <p class="section-subtitle">The interactive checker will appear here.</p>
+
+      <div class="checker-placeholder">
+        <p class="placeholder-text">
+          🛠 Eligibility Checker widget — coming in the next build
+        </p>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  /* -----------------------------
+     HERO
+     ----------------------------- */
+  .hero {
+    position: relative;
+    padding-block: var(--space-16) var(--space-24);
+    text-align: center;
+    background-color: var(--bg-base);
+    overflow: hidden;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse 80% 60% at 50% 0%,
+      color-mix(in srgb, var(--accent) 18%, transparent) 0%,
+      transparent 70%
+    );
+    pointer-events: none;
+    z-index: 0;
+    animation: hero-breathe 6s ease-in-out infinite;
+  }
+
+  .hero > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  @keyframes hero-breathe {
+    0%, 100% {
+      opacity: 0.75;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero::after {
+      animation: none;
+      opacity: 0.9;
+    }
+  }
+
+  .hero-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-6);
+  }
+
+  .hero-title {
+    max-width: 18ch;
+  }
+
+  .hero-tagline {
+    font-size: var(--fs-xl);
+    color: var(--text-secondary);
+    max-width: 52ch;
+    line-height: var(--lh-relaxed);
+  }
+
+  @media (min-width: 768px) {
+    .hero-tagline {
+      font-size: var(--fs-2xl);
+    }
+  }
+
+  .hero-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    justify-content: center;
+    margin-top: var(--space-2);
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--text-primary);
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-full);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .badge-icon {
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .hero-footnote {
+    font-size: var(--fs-sm);
+    color: var(--text-tertiary);
+    margin-top: var(--space-2);
+  }
+
+  /* -----------------------------
+     BUTTONS
+     ----------------------------- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: var(--fw-medium);
+    border-radius: var(--radius-md);
+    transition: background-color var(--transition-fast), transform var(--transition-fast);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .btn:hover {
+    text-decoration: none;
+  }
+
+  .btn-primary {
+    background-color: var(--accent);
+    color: var(--text-inverse);
+  }
+
+  [data-theme="dark"] .btn-primary {
+    color: var(--bg-base);
+  }
+
+  .btn-primary:hover {
+    background-color: var(--accent-hover);
+    color: var(--text-inverse);
+    transform: translateY(-1px);
+  }
+
+  .btn-lg {
+    font-size: var(--fs-base);
+    padding: var(--space-3) var(--space-8);
+    min-height: 48px;
+  }
+
+  /* -----------------------------
+     SECTIONS
+     ----------------------------- */
+  .section {
+    padding-block: var(--space-16);
+    background-color: var(--bg-base);
+  }
+
+  .section-alt {
+    background-color: var(--bg-section);
+  }
+
+  @media (min-width: 768px) {
+    .section {
+      padding-block: var(--space-24);
+    }
+  }
+
+  .section-title {
+    text-align: center;
+    margin-bottom: var(--space-3);
+  }
+
+  .section-subtitle {
+    text-align: center;
+    font-size: var(--fs-lg);
+    color: var(--text-secondary);
+    max-width: 52ch;
+    margin: 0 auto var(--space-12);
+  }
+
+  /* -----------------------------
+     CARDS (3-column)
+     ----------------------------- */
+  .cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+
+  @media (min-width: 768px) {
+    .cards {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .card {
+    padding: var(--space-8);
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    transition: border-color var(--transition-base), box-shadow var(--transition-base);
+  }
+
+  .card:hover {
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-md);
+  }
+
+  .card-icon {
+    font-size: var(--fs-2xl);
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--accent-bg);
+    border-radius: var(--radius-md);
+    color: var(--accent);
+  }
+
+  .card-title {
+    font-size: var(--fs-lg);
+    font-weight: var(--fw-semibold);
+  }
+
+  .card-text {
+    font-size: var(--fs-sm);
+    color: var(--text-secondary);
+    line-height: var(--lh-relaxed);
+  }
+
+  /* -----------------------------
+     REGULATIONS GRID
+     ----------------------------- */
+  .reg-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+    list-style: none;
+    max-width: 720px;
+    margin-inline: auto;
+  }
+
+  @media (min-width: 640px) {
+    .reg-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .reg-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding: var(--space-4) var(--space-6);
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+  }
+
+  .reg-name {
+    font-weight: var(--fw-semibold);
+    color: var(--text-primary);
+  }
+
+  .reg-detail {
+    font-size: var(--fs-sm);
+    color: var(--text-secondary);
+  }
+
+  /* -----------------------------
+     CHECKER PLACEHOLDER
+     ----------------------------- */
+  .checker-placeholder {
+    max-width: 720px;
+    margin-inline: auto;
+    padding: var(--space-16) var(--space-8);
+    background: linear-gradient(
+      180deg,
+      var(--accent-bg) 0%,
+      var(--bg-surface) 60%
+    );
+    border: 2px solid color-mix(in srgb, var(--accent) 60%, transparent);
+    border-radius: var(--radius-xl);
+    text-align: center;
+    box-shadow:
+      0 0 0 4px var(--accent-bg),
+      0 12px 40px -8px rgba(0, 102, 255, 0.25);
+    animation: checker-pulse 3s ease-in-out infinite;
+    transition:
+      transform var(--transition-base),
+      box-shadow var(--transition-base);
+  }
+
+  .checker-placeholder:hover {
+    transform: translateY(-2px);
+    animation-play-state: paused;
+    border-color: var(--accent);
+    box-shadow:
+      0 0 0 4px var(--accent-bg),
+      0 16px 48px -8px rgba(0, 102, 255, 0.4);
+  }
+
+  @keyframes checker-pulse {
+    0%, 100% {
+      box-shadow:
+        0 0 0 4px var(--accent-bg),
+        0 12px 40px -8px rgba(0, 102, 255, 0.25);
+    }
+    50% {
+      box-shadow:
+        0 0 0 10px var(--accent-bg),
+        0 18px 52px -8px rgba(0, 102, 255, 0.45);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .checker-placeholder {
+      animation: none;
+    }
+  }
+
+  .placeholder-text {
+    color: var(--accent);
+    font-size: var(--fs-lg);
+    font-weight: var(--fw-semibold);
+  }
+</style>

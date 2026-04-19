@@ -1,0 +1,165 @@
+---
+// Footer.astro — 사이트 하단
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-main">
+      <div class="footer-brand">
+        <p class="footer-title">Flight Compensation Checker</p>
+        <p class="footer-description">
+          Free, instant flight compensation eligibility checker
+          covering EU261, UK261, APPR, Montreal Convention, and more.
+        </p>
+      </div>
+
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <div class="footer-col">
+          <h3 class="footer-heading">Regulations</h3>
+          <ul class="footer-list">
+            <li><a href="/regulations/eu261">EU261</a></li>
+            <li><a href="/regulations/uk261">UK261</a></li>
+            <li><a href="/regulations/appr">APPR (Canada)</a></li>
+            <li><a href="/regulations/montreal">Montreal Convention</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h3 class="footer-heading">Resources</h3>
+          <ul class="footer-list">
+            <li><a href="/guide">Claim it yourself</a></li>
+            <li><a href="/services">Compensation services</a></li>
+            <li><a href="/faq">FAQ</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h3 class="footer-heading">About</h3>
+          <ul class="footer-list">
+            <li><a href="/about">About</a></li>
+            <li><a href="/disclaimer">Disclaimer</a></li>
+            <li><a href="/contact">Contact</a></li>
+            <li><a href="https://printmoneylab.com" rel="noopener">PrintMoneyLab Blog</a></li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="footer-copy">© {currentYear} PrintMoneyLab. Not financial or legal advice.</p>
+      <p class="footer-note">
+        Information provided for educational purposes. Always verify with official sources.
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    margin-top: var(--space-24);
+    padding-block: var(--space-16) var(--space-8);
+    background-color: var(--bg-muted);
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .footer-inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-12);
+  }
+
+  .footer-main {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-12);
+  }
+
+  @media (min-width: 768px) {
+    .footer-main {
+      grid-template-columns: 1.5fr 2fr;
+    }
+  }
+
+  .footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .footer-title {
+    font-size: var(--fs-base);
+    font-weight: var(--fw-semibold);
+    color: var(--text-primary);
+  }
+
+  .footer-description {
+    font-size: var(--fs-sm);
+    color: var(--text-secondary);
+    max-width: 360px;
+    line-height: var(--lh-relaxed);
+  }
+
+  .footer-nav {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-8);
+  }
+
+  @media (min-width: 640px) {
+    .footer-nav {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .footer-col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .footer-heading {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .footer-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .footer-list a {
+    font-size: var(--fs-sm);
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+  }
+
+  .footer-list a:hover {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .footer-bottom {
+    padding-top: var(--space-8);
+    border-top: 1px solid var(--border-subtle);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .footer-copy {
+    font-size: var(--fs-sm);
+    color: var(--text-secondary);
+  }
+
+  .footer-note {
+    font-size: var(--fs-xs);
+    color: var(--text-tertiary);
+  }
+</style>

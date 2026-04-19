@@ -1,0 +1,141 @@
+/* ===================================================
+   Design Tokens — Flight Compensation Checker
+   Based on: Wise (friendly trust) + Stripe (spacing) + Resend (theming)
+   =================================================== */
+
+/* -----------------------------
+   LIGHT MODE (default)
+   ----------------------------- */
+:root {
+  /* Backgrounds */
+  --bg-base: #FAFAFA;          /* page background */
+  --bg-surface: #FFFFFF;       /* cards, sections */
+  --bg-elevated: #FFFFFF;      /* modals, dropdowns */
+  --bg-muted: #F5F5F5;         /* subtle backgrounds */
+  --bg-section: #EEF0F4;       /* section alternation (stronger than muted) */
+
+  /* Text */
+  --text-primary: #0A0A0A;     /* main text */
+  --text-secondary: #525252;   /* subtitles, descriptions */
+  --text-tertiary: #737373;    /* metadata, hints */
+  --text-inverse: #FAFAFA;     /* text on dark backgrounds */
+
+  /* Borders */
+  --border-subtle: #E5E5E5;
+  --border-default: #D4D4D4;
+  --border-strong: #A3A3A3;
+
+  /* Brand / Accent */
+  --accent: #0066FF;           /* primary action */
+  --accent-hover: #0052CC;
+  --accent-bg: #EBF2FF;        /* accent background tint */
+
+  /* Semantic */
+  --success: #10B981;
+  --success-bg: #ECFDF5;
+  --warning: #F59E0B;
+  --warning-bg: #FFFBEB;
+  --error: #EF4444;
+  --error-bg: #FEF2F2;
+
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Geist Mono', 'SF Mono', Monaco, 'Cascadia Code', monospace;
+
+  /* Font Sizes (Mobile-first) */
+  --fs-xs: 0.75rem;    /* 12px */
+  --fs-sm: 0.875rem;   /* 14px */
+  --fs-base: 1rem;     /* 16px */
+  --fs-lg: 1.125rem;   /* 18px */
+  --fs-xl: 1.25rem;    /* 20px */
+  --fs-2xl: 1.5rem;    /* 24px */
+  --fs-3xl: 2rem;      /* 32px */
+  --fs-4xl: 2.5rem;    /* 40px */
+  --fs-5xl: 3rem;      /* 48px */
+
+  /* Font Weights */
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+
+  /* Line Heights */
+  --lh-tight: 1.2;
+  --lh-snug: 1.375;
+  --lh-normal: 1.5;
+  --lh-relaxed: 1.65;
+
+  /* Spacing */
+  --space-1: 0.25rem;    /* 4px */
+  --space-2: 0.5rem;     /* 8px */
+  --space-3: 0.75rem;    /* 12px */
+  --space-4: 1rem;       /* 16px */
+  --space-6: 1.5rem;     /* 24px */
+  --space-8: 2rem;       /* 32px */
+  --space-12: 3rem;      /* 48px */
+  --space-16: 4rem;      /* 64px */
+  --space-24: 6rem;      /* 96px */
+  --space-32: 8rem;      /* 128px */
+
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* Shadows (very subtle, Stripe-style) */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
+
+  /* Layout */
+  --max-width-content: 1200px;
+  --max-width-prose: 720px;
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 200ms ease;
+  --transition-slow: 300ms ease;
+}
+
+/* -----------------------------
+   DARK MODE
+   ----------------------------- */
+[data-theme="dark"] {
+  /* Backgrounds */
+  --bg-base: #0A0A0A;
+  --bg-surface: #151515;
+  --bg-elevated: #1F1F1F;
+  --bg-muted: #1A1A1A;
+  --bg-section: #0F0F0F;
+
+  /* Text */
+  --text-primary: #FAFAFA;
+  --text-secondary: #A3A3A3;
+  --text-tertiary: #737373;
+  --text-inverse: #0A0A0A;
+
+  /* Borders */
+  --border-subtle: #262626;
+  --border-default: #404040;
+  --border-strong: #525252;
+
+  /* Brand / Accent */
+  --accent: #4D90FF;
+  --accent-hover: #6BA3FF;
+  --accent-bg: #0D1F3D;
+
+  /* Semantic */
+  --success: #34D399;
+  --success-bg: #0D2818;
+  --warning: #FBBF24;
+  --warning-bg: #2D2106;
+  --error: #F87171;
+  --error-bg: #2D0E0E;
+
+  /* Shadows — darker surfaces need different shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.3);
+}

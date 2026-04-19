@@ -1,0 +1,133 @@
+---
+// Header.astro — 사이트 상단 네비게이션 + 다크모드 토글
+---
+
+<header class="header">
+  <div class="container header-inner">
+    <a href="/" class="logo" aria-label="Flight Compensation Checker Home">
+      <span class="logo-icon" aria-hidden="true">✈</span>
+      <span class="logo-text">Flight Compensation Checker</span>
+    </a>
+
+    <button
+      id="theme-toggle"
+      class="theme-toggle"
+      type="button"
+      aria-label="Toggle color theme"
+    >
+      <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4"/>
+        <path d="M12 2v2"/>
+        <path d="M12 20v2"/>
+        <path d="m4.93 4.93 1.41 1.41"/>
+        <path d="m17.66 17.66 1.41 1.41"/>
+        <path d="M2 12h2"/>
+        <path d="M20 12h2"/>
+        <path d="m6.34 17.66-1.41 1.41"/>
+        <path d="m19.07 4.93-1.41 1.41"/>
+      </svg>
+      <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background-color: var(--bg-base);
+    border-bottom: 1px solid var(--border-subtle);
+    backdrop-filter: saturate(180%) blur(8px);
+    -webkit-backdrop-filter: saturate(180%) blur(8px);
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--text-primary);
+    font-weight: var(--fw-semibold);
+    font-size: var(--fs-base);
+    text-decoration: none;
+  }
+
+  .logo:hover {
+    color: var(--text-primary);
+    text-decoration: none;
+  }
+
+  .logo-icon {
+    font-size: var(--fs-xl);
+    transform: rotate(-20deg);
+    display: inline-block;
+  }
+
+  /* Hide full logo text on mobile */
+  @media (max-width: 480px) {
+    .logo-text {
+      font-size: var(--fs-sm);
+    }
+  }
+
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    transition: background-color var(--transition-fast), color var(--transition-fast);
+  }
+
+  .theme-toggle:hover {
+    background-color: var(--bg-muted);
+    color: var(--text-primary);
+  }
+
+  /* Show sun in light mode, moon in dark mode */
+  .icon-sun {
+    display: block;
+  }
+
+  .icon-moon {
+    display: none;
+  }
+
+  [data-theme="dark"] .icon-sun {
+    display: none;
+  }
+
+  [data-theme="dark"] .icon-moon {
+    display: block;
+  }
+</style>
+
+<script is:inline>
+  // Theme toggle — loaded inline to avoid flash of wrong theme
+  (function () {
+    const toggle = document.getElementById('theme-toggle');
+    if (!toggle) return;
+
+    toggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      try {
+        localStorage.setItem('theme', next);
+      } catch (e) {
+        // localStorage might be blocked; ignore
+      }
+    });
+  })();
+</script>
