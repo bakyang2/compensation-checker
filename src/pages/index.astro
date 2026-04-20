@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import EligibilityChecker from '../components/EligibilityChecker.astro';
 ---
 
 <Layout
@@ -117,17 +118,16 @@ import Layout from '../layouts/Layout.astro';
     </div>
   </section>
 
-  <!-- CHECKER PLACEHOLDER (Step 1-5에서 교체) -->
+  <!-- CHECKER SECTION -->
   <section id="checker" class="section">
     <div class="container">
-      <h2 class="section-title">Check your flight</h2>
-      <p class="section-subtitle">The interactive checker will appear here.</p>
-
-      <div class="checker-placeholder">
-        <p class="placeholder-text">
-          🛠 Eligibility Checker widget — coming in the next build
-        </p>
+      <div class="checker-heading">
+        <span class="eyebrow">Eligibility Checker</span>
+        <h2 class="section-title">Check your flight</h2>
+        <p class="section-subtitle">Answer a few questions to see if you're eligible for compensation under any major aviation law.</p>
       </div>
+
+      <EligibilityChecker />
     </div>
   </section>
 </Layout>
@@ -309,6 +309,40 @@ import Layout from '../layouts/Layout.astro';
   }
 
   /* -----------------------------
+     CHECKER SECTION HEADING
+     ----------------------------- */
+  .checker-heading {
+    text-align: center;
+    margin-bottom: var(--space-12);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .checker-heading .section-title {
+    margin-bottom: 0;
+  }
+
+  .checker-heading .section-subtitle {
+    margin: 0;
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: var(--space-1) var(--space-3);
+    background-color: var(--accent-bg);
+    border-radius: var(--radius-full);
+  }
+
+  /* -----------------------------
      CARDS (3-column)
      ----------------------------- */
   .cards {
@@ -400,61 +434,4 @@ import Layout from '../layouts/Layout.astro';
     color: var(--text-secondary);
   }
 
-  /* -----------------------------
-     CHECKER PLACEHOLDER
-     ----------------------------- */
-  .checker-placeholder {
-    max-width: 720px;
-    margin-inline: auto;
-    padding: var(--space-16) var(--space-8);
-    background: linear-gradient(
-      180deg,
-      var(--accent-bg) 0%,
-      var(--bg-surface) 60%
-    );
-    border: 2px solid color-mix(in srgb, var(--accent) 60%, transparent);
-    border-radius: var(--radius-xl);
-    text-align: center;
-    box-shadow:
-      0 0 0 4px var(--accent-bg),
-      0 12px 40px -8px rgba(0, 102, 255, 0.25);
-    animation: checker-pulse 3s ease-in-out infinite;
-    transition:
-      transform var(--transition-base),
-      box-shadow var(--transition-base);
-  }
-
-  .checker-placeholder:hover {
-    transform: translateY(-2px);
-    animation-play-state: paused;
-    border-color: var(--accent);
-    box-shadow:
-      0 0 0 4px var(--accent-bg),
-      0 16px 48px -8px rgba(0, 102, 255, 0.4);
-  }
-
-  @keyframes checker-pulse {
-    0%, 100% {
-      box-shadow:
-        0 0 0 4px var(--accent-bg),
-        0 12px 40px -8px rgba(0, 102, 255, 0.25);
-    }
-    50% {
-      box-shadow:
-        0 0 0 10px var(--accent-bg),
-        0 18px 52px -8px rgba(0, 102, 255, 0.45);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .checker-placeholder {
-      animation: none;
-    }
-  }
-
-  .placeholder-text {
-    color: var(--accent);
-    font-size: var(--fs-lg);
-    font-weight: var(--fw-semibold);
-  }
 </style>

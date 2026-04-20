@@ -1,0 +1,3160 @@
+---
+// EligibilityChecker.astro — multi-step flight compensation eligibility widget.
+// Step 1-5-B: Steps 1 (airports), 2 (airline), 3 (flight date), 4 (issue type).
+// Total flow is 6 steps; steps 5-6 come in Step 1-5-C.
+---
+
+<div
+  class="ec checker-shell"
+  id="eligibility-checker"
+  data-step="1"
+  aria-live="polite"
+>
+  <!-- Progress indicator -->
+  <div class="ec-progress" aria-hidden="true">
+    <span class="ec-progress-label">
+      Step <span class="ec-progress-current">1</span> of 6
+    </span>
+    <div class="ec-progress-bar">
+      <div class="ec-progress-fill"></div>
+    </div>
+  </div>
+
+  <!-- ================================================= -->
+  <!-- STEP 1 — Origin / Destination                     -->
+  <!-- ================================================= -->
+  <section
+    class="ec-step is-active"
+    data-step-id="1"
+    aria-labelledby="ec-step1-title"
+  >
+    <header class="ec-step-head">
+      <span class="ec-step-counter">Step 1</span>
+      <h3 id="ec-step1-title" class="ec-step-title">Where did you fly?</h3>
+      <p class="ec-step-sub">Enter your departure and arrival airports.</p>
+    </header>
+
+    <div class="ec-fields">
+      <div class="ec-field">
+        <label class="ec-label" for="ec-origin">From</label>
+        <div
+          class="ec-ac"
+          data-field="origin"
+          data-kind="airport"
+        >
+          <div class="ec-ac-inputwrap">
+            <svg
+              class="ec-ac-icon"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/>
+            </svg>
+            <input
+              type="text"
+              id="ec-origin"
+              class="ec-ac-input"
+              placeholder="e.g. LHR, Heathrow, or Paris"
+              role="combobox"
+              aria-autocomplete="list"
+              aria-expanded="false"
+              aria-controls="ec-origin-listbox"
+              autocomplete="off"
+              spellcheck="false"
+            />
+            <button type="button" class="ec-ac-clear" aria-label="Clear origin" hidden>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+          </div>
+          <ul class="ec-ac-list" id="ec-origin-listbox" role="listbox" aria-label="Origin airport suggestions" hidden></ul>
+        </div>
+      </div>
+
+      <div class="ec-field">
+        <label class="ec-label" for="ec-destination">To</label>
+        <div
+          class="ec-ac"
+          data-field="destination"
+          data-kind="airport"
+        >
+          <div class="ec-ac-inputwrap">
+            <svg
+              class="ec-ac-icon ec-ac-icon-flip"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/>
+            </svg>
+            <input
+              type="text"
+              id="ec-destination"
+              class="ec-ac-input"
+              placeholder="e.g. CDG, Madrid, or Rome"
+              role="combobox"
+              aria-autocomplete="list"
+              aria-expanded="false"
+              aria-controls="ec-destination-listbox"
+              autocomplete="off"
+              spellcheck="false"
+            />
+            <button type="button" class="ec-ac-clear" aria-label="Clear destination" hidden>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+          </div>
+          <ul class="ec-ac-list" id="ec-destination-listbox" role="listbox" aria-label="Destination airport suggestions" hidden></ul>
+        </div>
+      </div>
+    </div>
+
+    <p class="ec-warning" id="ec-warning" role="status" aria-live="polite">
+      Origin and destination must be different airports.
+    </p>
+
+    <div class="ec-nav">
+      <button type="button" class="ec-next-btn" data-action="next" disabled>
+        Next
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 12h14"/>
+          <path d="m12 5 7 7-7 7"/>
+        </svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ================================================= -->
+  <!-- STEP 2 — Airline                                  -->
+  <!-- ================================================= -->
+  <section
+    class="ec-step"
+    data-step-id="2"
+    aria-labelledby="ec-step2-title"
+  >
+    <header class="ec-step-head">
+      <span class="ec-step-counter">Step 2</span>
+      <h3 id="ec-step2-title" class="ec-step-title">Which airline operated the flight?</h3>
+      <p class="ec-step-sub">Pick the carrier on your ticket.</p>
+    </header>
+
+    <div class="ec-field">
+      <label class="ec-label" for="ec-airline">Airline</label>
+      <p class="ec-hint">Your airline determines whether EU261 applies to your flight.</p>
+      <div
+        class="ec-ac"
+        data-field="airline"
+        data-kind="airline"
+      >
+        <div class="ec-ac-inputwrap">
+          <svg
+            class="ec-ac-icon"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/>
+          </svg>
+          <input
+            type="text"
+            id="ec-airline"
+            class="ec-ac-input"
+            placeholder="e.g. Lufthansa, British Airways, Ryanair"
+            role="combobox"
+            aria-autocomplete="list"
+            aria-expanded="false"
+            aria-controls="ec-airline-listbox"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button type="button" class="ec-ac-clear" aria-label="Clear airline" hidden>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+        <ul class="ec-ac-list" id="ec-airline-listbox" role="listbox" aria-label="Airline suggestions" hidden></ul>
+      </div>
+    </div>
+
+    <div class="ec-nav">
+      <button type="button" class="ec-back-btn" data-action="back">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M19 12H5"/>
+          <path d="m12 19-7-7 7-7"/>
+        </svg>
+        Back
+      </button>
+      <button type="button" class="ec-next-btn" data-action="next" disabled>
+        Next
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 12h14"/>
+          <path d="m12 5 7 7-7 7"/>
+        </svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ================================================= -->
+  <!-- STEP 3 — Flight date                              -->
+  <!-- ================================================= -->
+  <section
+    class="ec-step"
+    data-step-id="3"
+    aria-labelledby="ec-step3-title"
+  >
+    <header class="ec-step-head">
+      <span class="ec-step-counter">Step 3</span>
+      <h3 id="ec-step3-title" class="ec-step-title">When did you fly?</h3>
+      <p class="ec-step-sub">The flight date determines which regulations apply.</p>
+    </header>
+
+    <div class="ec-field">
+      <label class="ec-label" for="ec-date">Flight date</label>
+      <p class="ec-hint">When was your flight scheduled to depart? (You can claim for flights up to 3 years ago.)</p>
+      <p class="ec-hint-format">Format: Year · Month · Day (your browser may display this in your system language).</p>
+      <input
+        type="date"
+        id="ec-date"
+        class="ec-date-input"
+      />
+    </div>
+
+    <div class="ec-nav">
+      <button type="button" class="ec-back-btn" data-action="back">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M19 12H5"/>
+          <path d="m12 19-7-7 7-7"/>
+        </svg>
+        Back
+      </button>
+      <button type="button" class="ec-next-btn" data-action="next" disabled>
+        Next
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 12h14"/>
+          <path d="m12 5 7 7-7 7"/>
+        </svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ================================================= -->
+  <!-- STEP 4 — Issue type                               -->
+  <!-- ================================================= -->
+  <section
+    class="ec-step"
+    data-step-id="4"
+    aria-labelledby="ec-step4-title"
+  >
+    <header class="ec-step-head">
+      <span class="ec-step-counter">Step 4</span>
+      <h3 id="ec-step4-title" class="ec-step-title">What happened to your flight?</h3>
+      <p class="ec-step-sub">Select the scenario that applies.</p>
+    </header>
+
+    <div
+      class="ec-issue-grid"
+      role="radiogroup"
+      aria-labelledby="ec-step4-title"
+      data-radio-name="issueType"
+    >
+      <button
+        type="button"
+        role="radio"
+        aria-checked="false"
+        tabindex="0"
+        class="ec-issue-option"
+        data-value="delayed"
+      >
+        <span class="ec-issue-icon" aria-hidden="true">⏱</span>
+        <span class="ec-issue-title">Delayed</span>
+        <span class="ec-issue-desc">My flight arrived late (based on arrival time, not departure).</span>
+      </button>
+
+      <button
+        type="button"
+        role="radio"
+        aria-checked="false"
+        tabindex="-1"
+        class="ec-issue-option"
+        data-value="cancelled"
+      >
+        <span class="ec-issue-icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </span>
+        <span class="ec-issue-title">Cancelled</span>
+        <span class="ec-issue-desc">My flight was cancelled.</span>
+      </button>
+
+      <button
+        type="button"
+        role="radio"
+        aria-checked="false"
+        tabindex="-1"
+        class="ec-issue-option"
+        data-value="denied_boarding"
+      >
+        <span class="ec-issue-icon" aria-hidden="true">🚫</span>
+        <span class="ec-issue-title">Denied boarding</span>
+        <span class="ec-issue-desc">I was bumped due to overbooking.</span>
+      </button>
+
+      <button
+        type="button"
+        role="radio"
+        aria-checked="false"
+        tabindex="-1"
+        class="ec-issue-option"
+        data-value="downgraded"
+      >
+        <span class="ec-issue-icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <polyline points="19 12 12 19 5 12"/>
+          </svg>
+        </span>
+        <span class="ec-issue-title">Downgraded</span>
+        <span class="ec-issue-desc">My seat was downgraded to a lower class.</span>
+      </button>
+    </div>
+
+    <div class="ec-issue-note" role="note">
+      <svg class="ec-issue-note-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="16" x2="12" y2="12"/>
+        <line x1="12" y1="8" x2="12.01" y2="8"/>
+      </svg>
+      <span>Compensation for delays is based on your <strong>arrival time</strong>, not departure. A flight that leaves late but arrives on time isn't eligible. The 3-hour threshold under EU261/UK261 refers to how late you arrived at your final destination.</span>
+    </div>
+
+    <div class="ec-nav">
+      <button type="button" class="ec-back-btn" data-action="back">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M19 12H5"/>
+          <path d="m12 19-7-7 7-7"/>
+        </svg>
+        Back
+      </button>
+      <button type="button" class="ec-next-btn" data-action="next" disabled>
+        Next
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 12h14"/>
+          <path d="m12 5 7 7-7 7"/>
+        </svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ================================================= -->
+  <!-- STEP 5 — Issue-specific follow-up (branched)      -->
+  <!-- ================================================= -->
+  <section
+    class="ec-step"
+    data-step-id="5"
+    aria-labelledby="ec-step5-title"
+  >
+    <header class="ec-step-head">
+      <span class="ec-step-counter">Step 5</span>
+      <h3 id="ec-step5-title" class="ec-step-title">Tell us more</h3>
+      <p class="ec-step-sub">A few details specific to what happened on your flight.</p>
+    </header>
+
+    <!-- Branch A: delayed -->
+    <div class="ec-branch" data-branch="delayed">
+      <div class="ec-branch-question">
+        <h4 class="ec-branch-question-title">How much was your arrival delayed?</h4>
+        <p class="ec-branch-question-hint">This is the delay at your final destination, not the departure delay.</p>
+        <div
+          class="ec-choice-group"
+          role="radiogroup"
+          aria-label="Arrival delay duration"
+          data-radio-name="delayDuration"
+        >
+          <button type="button" role="radio" aria-checked="false" tabindex="0" class="ec-choice-option" data-value="under_2h">
+            <span class="ec-choice-title">Less than 2 hours</span>
+            <span class="ec-choice-subtitle">Usually not eligible for compensation.</span>
+          </button>
+          <button type="button" role="radio" aria-checked="false" tabindex="-1" class="ec-choice-option" data-value="2_to_3h">
+            <span class="ec-choice-title">2 to under 3 hours</span>
+            <span class="ec-choice-subtitle">Limited compensation under some laws.</span>
+          </button>
+          <button type="button" role="radio" aria-checked="false" tabindex="-1" class="ec-choice-option" data-value="3_to_4h">
+            <span class="ec-choice-title">3 to under 4 hours</span>
+            <span class="ec-choice-subtitle">EU261 / UK261 / APPR threshold.</span>
+          </button>
+          <button type="button" role="radio" aria-checked="false" tabindex="-1" class="ec-choice-option" data-value="4h_plus">
+            <span class="ec-choice-title">4 hours or more</span>
+            <span class="ec-choice-subtitle">Higher compensation tier.</span>
+          </button>
+          <button type="button" role="radio" aria-checked="false" tabindex="-1" class="ec-choice-option" data-value="never_arrived">
+            <span class="ec-choice-title">I never arrived (flight cancelled mid-journey)</span>
+            <span class="ec-choice-subtitle">Treated as a cancellation.</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Branch B: cancelled -->
+    <div class="ec-branch" data-branch="cancelled">
+      <div class="ec-branch-question">
+        <h4 class="ec-branch-question-title">When did the airline notify you of the cancellation?</h4>
+        <p class="ec-branch-question-hint">Compensation depends heavily on how much notice you received.</p>
+        <div
+          class="ec-choice-group"
+          role="radiogroup"
+          aria-label="Notification timing"
+          data-radio-name="notificationTiming"
+        >
+          <button type="button" role="radio" aria-checked="false" tabindex="0" class="ec-choice-option" data-value="under_7d">
+            <span class="ec-choice-title">Less than 7 days before</span>
+            <span class="ec-choice-subtitle">Strongest case for compensation.</span>
+          </button>
+          <button type="button" role="radio" aria-checked="false" tabindex="-1" class="ec-choice-option" data-value="7_to_13d">
+            <span class="ec-choice-title">7 to 13 days before</span>
+            <span class="ec-choice-subtitle">Conditional — depends on rerouting.</span>
+          </button>
+          <button type="button" role="radio" aria-checked="false" tabindex="-1" class="ec-choice-option" data-value="14d_plus">
+            <span class="ec-choice-title">14 days or more before</span>
+            <span class="ec-choice-subtitle">Usually not eligible for compensation.</span>
+          </button>
+          <button type="button" role="radio" aria-checked="false" tabindex="-1" class="ec-choice-option" data-value="at_airport">
+            <span class="ec-choice-title">Only at the airport / during travel</span>
+            <span class="ec-choice-subtitle">Treated as same-day cancellation.</span>
+          </button>
+          <button type="button" role="radio" aria-checked="false" tabindex="-1" class="ec-choice-option" data-value="unknown">
+            <span class="ec-choice-title">I don't remember</span>
+            <span class="ec-choice-subtitle">We'll check conservatively.</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="ec-branch-question">
+        <h4 class="ec-branch-question-title">Did the airline offer alternative transportation?</h4>
+        <p class="ec-branch-question-hint">Rerouting options affect your eligibility in some jurisdictions.</p>
+        <div
+          class="ec-choice-group is-single-col"
+          role="radiogroup"
+          aria-label="Rerouting offer"
+          data-radio-name="reroutingOffered"
+        >
+          <button type="button" role="radio" aria-checked="false" tabindex="0" class="ec-choice-option" data-value="yes_accepted">
+            <span class="ec-choice-title">Yes, and I accepted it</span>
+            <span class="ec-choice-subtitle">Arrival delay determines compensation.</span>
+          </button>
+          <button type="button" role="radio" aria-checked="false" tabindex="-1" class="ec-choice-option" data-value="yes_declined">
+            <span class="ec-choice-title">Yes, but I declined / took a refund</span>
+            <span class="ec-choice-subtitle">Refund only, usually no compensation.</span>
+          </button>
+          <button type="button" role="radio" aria-checked="false" tabindex="-1" class="ec-choice-option" data-value="not_offered">
+            <span class="ec-choice-title">No rerouting offered</span>
+            <span class="ec-choice-subtitle">Stronger case for full compensation.</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Branch C: denied_boarding -->
+    <div class="ec-branch" data-branch="denied_boarding">
+      <div class="ec-branch-question">
+        <h4 class="ec-branch-question-title">Were you denied boarding voluntarily or involuntarily?</h4>
+        <p class="ec-branch-question-hint">This changes your rights significantly.</p>
+        <div
+          class="ec-choice-group"
+          role="radiogroup"
+          aria-label="Denied boarding type"
+          data-radio-name="deniedBoardingType"
+        >
+          <button type="button" role="radio" aria-checked="false" tabindex="0" class="ec-choice-option" data-value="involuntary">
+            <span class="ec-choice-title">Involuntarily — I was bumped against my will</span>
+            <span class="ec-choice-subtitle">Fixed compensation likely applies (EU261 Article 4).</span>
+          </button>
+          <button type="button" role="radio" aria-checked="false" tabindex="-1" class="ec-choice-option" data-value="voluntary">
+            <span class="ec-choice-title">Voluntarily — I accepted the airline's offer to take a later flight</span>
+            <span class="ec-choice-subtitle">Based on the terms you agreed to, not fixed compensation.</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Branch D: downgraded -->
+    <div class="ec-branch" data-branch="downgraded">
+      <div class="ec-branch-question">
+        <h4 class="ec-branch-question-title">What class did you originally book?</h4>
+        <div
+          class="ec-choice-group"
+          role="radiogroup"
+          aria-label="Original cabin class"
+          data-radio-name="originalClass"
+        >
+          <button type="button" role="radio" aria-checked="false" tabindex="0" class="ec-choice-option" data-value="first">
+            <span class="ec-choice-title">First class</span>
+          </button>
+          <button type="button" role="radio" aria-checked="false" tabindex="-1" class="ec-choice-option" data-value="business">
+            <span class="ec-choice-title">Business class</span>
+          </button>
+          <button type="button" role="radio" aria-checked="false" tabindex="-1" class="ec-choice-option" data-value="premium_economy">
+            <span class="ec-choice-title">Premium economy</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="ec-branch-question">
+        <h4 class="ec-branch-question-title">What class did you actually fly?</h4>
+        <p class="ec-branch-question-hint">Only classes lower than your booked class appear here.</p>
+        <div
+          class="ec-choice-group"
+          role="radiogroup"
+          aria-label="Actual cabin class flown"
+          data-radio-name="actualClass"
+        >
+          <button type="button" role="radio" aria-checked="false" tabindex="0" class="ec-choice-option" data-value="business">
+            <span class="ec-choice-title">Business class</span>
+          </button>
+          <button type="button" role="radio" aria-checked="false" tabindex="-1" class="ec-choice-option" data-value="premium_economy">
+            <span class="ec-choice-title">Premium economy</span>
+          </button>
+          <button type="button" role="radio" aria-checked="false" tabindex="-1" class="ec-choice-option" data-value="economy">
+            <span class="ec-choice-title">Economy</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="ec-nav">
+      <button type="button" class="ec-back-btn" data-action="back">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M19 12H5"/>
+          <path d="m12 19-7-7 7-7"/>
+        </svg>
+        Back
+      </button>
+      <button type="button" class="ec-next-btn" data-action="next" disabled>
+        Next
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 12h14"/>
+          <path d="m12 5 7 7-7 7"/>
+        </svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ================================================= -->
+  <!-- STEP 6 — Reason for disruption                    -->
+  <!-- ================================================= -->
+  <section
+    class="ec-step"
+    data-step-id="6"
+    aria-labelledby="ec-step6-title"
+  >
+    <header class="ec-step-head">
+      <span class="ec-step-counter">Step 6</span>
+      <h3 id="ec-step6-title" class="ec-step-title">What reason did the airline give?</h3>
+      <p class="ec-step-sub">Airlines can avoid compensation only if they prove "extraordinary circumstances" — the burden of proof is on them.</p>
+    </header>
+
+    <!-- Variant: default (6-card reason selector) -->
+    <div class="ec-step6-variant" data-variant="default">
+      <div
+        class="ec-issue-grid"
+        role="radiogroup"
+        aria-labelledby="ec-step6-title"
+        data-radio-name="disruptionReason"
+      >
+        <button type="button" role="radio" aria-checked="false" tabindex="0" class="ec-issue-option" data-value="weather">
+          <span class="ec-issue-icon" aria-hidden="true">⛈</span>
+          <span class="ec-issue-title">Weather</span>
+          <span class="ec-issue-desc">Often cited — but not always exempting.</span>
+        </button>
+        <button type="button" role="radio" aria-checked="false" tabindex="-1" class="ec-issue-option" data-value="technical">
+          <span class="ec-issue-icon" aria-hidden="true">🔧</span>
+          <span class="ec-issue-title">Technical / mechanical issue</span>
+          <span class="ec-issue-desc">Usually <em>not</em> an exempting circumstance.</span>
+        </button>
+        <button type="button" role="radio" aria-checked="false" tabindex="-1" class="ec-issue-option" data-value="strike">
+          <span class="ec-issue-icon" aria-hidden="true">⚠</span>
+          <span class="ec-issue-title">Strike</span>
+          <span class="ec-issue-desc">Airline crew, ATC, or ground staff — depends on who's striking.</span>
+        </button>
+        <button type="button" role="radio" aria-checked="false" tabindex="-1" class="ec-issue-option" data-value="operational">
+          <span class="ec-issue-icon" aria-hidden="true">📋</span>
+          <span class="ec-issue-title">Operational</span>
+          <span class="ec-issue-desc">Crew shortage, scheduling — usually <em>not</em> exempting.</span>
+        </button>
+        <button type="button" role="radio" aria-checked="false" tabindex="-1" class="ec-issue-option" data-value="security_atc">
+          <span class="ec-issue-icon" aria-hidden="true">🛡</span>
+          <span class="ec-issue-title">Security / ATC / airport closure</span>
+          <span class="ec-issue-desc">Typically exempting.</span>
+        </button>
+        <button type="button" role="radio" aria-checked="false" tabindex="-1" class="ec-issue-option" data-value="unknown">
+          <span class="ec-issue-icon" aria-hidden="true">❓</span>
+          <span class="ec-issue-title">I don't know / wasn't told</span>
+          <span class="ec-issue-desc">We'll evaluate conservatively.</span>
+        </button>
+      </div>
+
+      <div class="ec-issue-note" role="note">
+        <svg class="ec-issue-note-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="16" x2="12" y2="12"/>
+          <line x1="12" y1="8" x2="12.01" y2="8"/>
+        </svg>
+        <span><strong>The airline's word isn't final.</strong> Courts have repeatedly ruled that airlines overclaim "extraordinary circumstances." What matters is whether the disruption was <em>truly beyond the airline's control</em>.</span>
+      </div>
+    </div>
+
+    <!-- Variant: downgraded (no reason needed under EU261 Article 10) -->
+    <div class="ec-step6-variant" data-variant="downgraded">
+      <header class="ec-step-head">
+        <h4 class="ec-step-title">You're all set</h4>
+        <p class="ec-step-sub">No disruption reason is needed for downgrade cases.</p>
+      </header>
+
+      <div class="ec-issue-note" role="note">
+        <svg class="ec-issue-note-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="16" x2="12" y2="12"/>
+          <line x1="12" y1="8" x2="12.01" y2="8"/>
+        </svg>
+        <span>Under <strong>EU261 Article 10</strong>, downgrades require a fixed refund of <strong>30%, 50%, or 75%</strong> of your ticket price based on flight distance — regardless of the airline's reason. No "extraordinary circumstances" defense applies to seat downgrades.</span>
+      </div>
+    </div>
+
+    <div class="ec-nav">
+      <button type="button" class="ec-back-btn" data-action="back">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M19 12H5"/>
+          <path d="m12 19-7-7 7-7"/>
+        </svg>
+        Back
+      </button>
+      <button type="button" class="ec-next-btn" data-action="next" disabled>
+        Check eligibility
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ================================================= -->
+  <!-- Result view (shown after "Check eligibility")     -->
+  <!-- ================================================= -->
+  <div class="ec-result">
+    <!-- Variant: ELIGIBLE -->
+    <div class="ec-result-variant" data-variant="eligible">
+      <div class="ec-verdict ec-verdict-positive">
+        <div class="ec-verdict-icon" aria-hidden="true">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <h2 class="ec-verdict-title">You may be eligible for compensation</h2>
+        <p class="ec-verdict-summary" data-slot="verdict-summary"></p>
+      </div>
+
+      <div class="ec-coverage">
+        <h3 class="ec-section-heading">Applicable regulations</h3>
+        <div class="ec-coverage-grid" data-slot="coverage-grid"></div>
+      </div>
+
+      <div class="ec-cta">
+        <h3 class="ec-section-heading">What to do next</h3>
+
+        <!-- Primary path: specialist services -->
+        <div class="ec-cta-specialists">
+          <div class="ec-cta-specialists-header">
+            <h4 class="ec-cta-specialists-title">Let specialists handle your claim</h4>
+            <p class="ec-cta-specialists-desc">No win, no fee — you only pay if they recover compensation for you.</p>
+          </div>
+
+          <div class="ec-service-grid">
+            <a href="https://compensair.com" rel="sponsored noopener" target="_blank" class="ec-service-card">
+              <div class="ec-service-name">Compensair</div>
+              <div class="ec-service-detail">
+                Quick 1–3 day confirmation<br>
+                No paperwork, no stress
+              </div>
+              <span class="ec-service-cta">Check my claim →</span>
+            </a>
+            <a href="https://airadvisor.com" rel="sponsored noopener" target="_blank" class="ec-service-card">
+              <div class="ec-service-name">AirAdvisor</div>
+              <div class="ec-service-detail">
+                Trustpilot 9.2/10 rating<br>
+                We go to court if they refuse
+              </div>
+              <span class="ec-service-cta">Check my claim →</span>
+            </a>
+            <a href="https://www.airhelp.com" rel="sponsored noopener" target="_blank" class="ec-service-card">
+              <div class="ec-service-name">AirHelp</div>
+              <div class="ec-service-detail">
+                Largest flight compensation brand<br>
+                16 languages
+              </div>
+              <span class="ec-service-cta">Check my claim →</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Secondary path: self-claim, low visual weight -->
+        <div class="ec-cta-alt">
+          <a href="/guide" target="_blank" rel="noopener" class="ec-cta-self-link">
+            Or claim it yourself — we'll show you how
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M7 17 17 7"/>
+              <path d="M7 7h10v10"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <details class="ec-details">
+        <summary class="ec-details-summary">
+          <span>See why each regulation applies and which don't</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </summary>
+        <div class="ec-details-body" data-slot="details-body"></div>
+      </details>
+
+      <p class="ec-disclaimer">
+        This is an educational estimate, not legal advice. Actual compensation depends on airline cooperation and, in some cases, court outcomes. Verify with an aviation lawyer or licensed claim specialist before acting.
+      </p>
+
+      <button class="ec-restart-btn" type="button" data-action="restart">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 12a9 9 0 1 0 9-9"/>
+          <path d="m3 4 0 8 8 0"/>
+        </svg>
+        Check another flight
+      </button>
+    </div>
+
+    <!-- Variant: NOT_ELIGIBLE -->
+    <div class="ec-result-variant" data-variant="not_eligible">
+      <div class="ec-verdict ec-verdict-neutral">
+        <div class="ec-verdict-icon" aria-hidden="true">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        </div>
+        <h2 class="ec-verdict-title">Your flight doesn't qualify for fixed compensation</h2>
+        <p class="ec-verdict-summary" data-slot="verdict-summary"></p>
+      </div>
+
+      <div class="ec-reasons">
+        <h3 class="ec-section-heading">Why</h3>
+        <ul class="ec-reason-list" data-slot="reason-list"></ul>
+      </div>
+
+      <div class="ec-alternatives">
+        <h3 class="ec-section-heading">What else you can do</h3>
+        <ul class="ec-alt-list">
+          <li>Request a refund from the airline under their Customer Service Plan.</li>
+          <li>File a complaint with your local aviation consumer-protection authority.</li>
+          <li>Check your travel insurance for trip-interruption coverage.</li>
+          <li>If the Montreal Convention applied (international flight), document your out-of-pocket losses for a potential damages claim.</li>
+        </ul>
+      </div>
+
+      <p class="ec-disclaimer">
+        Laws change and airlines' internal policies vary. If you believe you have grounds despite this result, consult an aviation lawyer.
+      </p>
+
+      <button class="ec-restart-btn" type="button" data-action="restart">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 12a9 9 0 1 0 9-9"/>
+          <path d="m3 4 0 8 8 0"/>
+        </svg>
+        Check another flight
+      </button>
+    </div>
+
+    <!-- Variant: OUT_OF_SCOPE -->
+    <div class="ec-result-variant" data-variant="out_of_scope">
+      <div class="ec-verdict ec-verdict-neutral">
+        <div class="ec-verdict-icon" aria-hidden="true">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        </div>
+        <h2 class="ec-verdict-title">Your flight isn't covered by the regulations we check</h2>
+        <p class="ec-verdict-summary" data-slot="verdict-summary"></p>
+      </div>
+
+      <div class="ec-alternatives">
+        <h3 class="ec-section-heading">What you can do</h3>
+        <ul class="ec-alt-list" data-slot="alt-list"></ul>
+      </div>
+
+      <p class="ec-disclaimer">
+        Regulations evolve. We will expand coverage (e.g. future US DOT rules) as they come into force.
+      </p>
+
+      <button class="ec-restart-btn" type="button" data-action="restart">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 12a9 9 0 1 0 9-9"/>
+          <path d="m3 4 0 8 8 0"/>
+        </svg>
+        Check another flight
+      </button>
+    </div>
+  </div>
+
+  <!-- ================================================= -->
+  <!-- Scope-awareness disclaimer (always visible)       -->
+  <!-- ================================================= -->
+  <div class="ec-scope-notice">
+    <details class="ec-scope-details">
+      <summary class="ec-scope-summary">
+        <svg class="ec-scope-info-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 16v-4"/>
+          <path d="M12 8h.01"/>
+        </svg>
+        <span class="ec-scope-label">Which flights does this checker cover?</span>
+        <svg class="ec-scope-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </summary>
+      <div class="ec-scope-content">
+        <p>This checker evaluates your flight against <strong>6 major passenger-rights regulations</strong>:</p>
+        <ul>
+          <li><strong>EU261</strong> — EU departures, EU airline arrivals</li>
+          <li><strong>UK261</strong> — UK departures, UK airline arrivals</li>
+          <li><strong>APPR</strong> — Canadian departures, arrivals, or Canadian airlines</li>
+          <li><strong>Montreal Convention</strong> — most international flights (baggage &amp; delays)</li>
+          <li><strong>ANAC 400/2022</strong> — Brazilian flights</li>
+          <li><strong>Israel Aviation Services Law</strong> — Israeli flights</li>
+        </ul>
+        <p class="ec-scope-gap"><strong>Not fully covered:</strong> Purely domestic flights within the US, most Asian countries, Australia, and most of Africa and the Middle East currently have no equivalent fixed-compensation law. If your flight touches Europe, Canada, Brazil, or Israel, you are likely covered.</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<script>
+  import { evaluateEligibility } from '../lib/eligibility.js';
+
+  type Airport = {
+    icao: string;
+    iata: string;
+    name: string;
+    city: string;
+    country: string;
+    lat: number;
+    lon: number;
+    iataLc: string;
+    nameLc: string;
+    cityLc: string;
+  };
+
+  type Airline = {
+    iata: string;
+    icao: string;
+    name: string;
+    country: string;
+    iataLc: string;
+    nameLc: string;
+  };
+
+  type IssueType = 'delayed' | 'cancelled' | 'denied_boarding' | 'downgraded';
+  type DelayDuration = 'under_2h' | '2_to_3h' | '3_to_4h' | '4h_plus' | 'never_arrived';
+  type NotificationTiming = 'under_7d' | '7_to_13d' | '14d_plus' | 'at_airport' | 'unknown';
+  type ReroutingOffered = 'yes_accepted' | 'yes_declined' | 'not_offered';
+  type DeniedBoardingType = 'involuntary' | 'voluntary';
+  type CabinClass = 'first' | 'business' | 'premium_economy' | 'economy';
+  type DisruptionReason = 'weather' | 'technical' | 'strike' | 'operational' | 'security_atc' | 'unknown';
+
+  type CoverageEntry = {
+    regulation: string;
+    applicable: boolean;
+    compensation: null | {
+      type: string;
+      amount?: number;
+      currency?: string;
+      min?: number;
+      max?: number;
+      value?: number;
+      basis?: string;
+      description?: string;
+      approxUSD?: number;
+      typicalCourt?: string;
+    };
+    reasoning: string;
+  };
+
+  type EligibilityResult = {
+    eligible: boolean;
+    distance: number;
+    coverage: CoverageEntry[];
+    notCoveredBy: CoverageEntry[];
+    outOfScope: boolean;
+    outOfScopeReason: string | null;
+    notes: string[];
+  };
+
+  type Selections = {
+    origin: Airport | null;
+    destination: Airport | null;
+    airline: Airline | null;
+    flightDate: string | null; // YYYY-MM-DD
+    issueType: IssueType | null;
+    delayDuration: DelayDuration | null;
+    notificationTiming: NotificationTiming | null;
+    reroutingOffered: ReroutingOffered | null;
+    deniedBoardingType: DeniedBoardingType | null;
+    originalClass: CabinClass | null;
+    actualClass: CabinClass | null;
+    disruptionReason: DisruptionReason | null;
+    result: EligibilityResult | null;
+  };
+
+  // Higher index = lower class. Used to hide actual-class options that are not lower than the original class.
+  const CABIN_CLASS_ORDER: CabinClass[] = ['first', 'business', 'premium_economy', 'economy'];
+
+  const MIN_CHARS = 2;
+  const MAX_RESULTS = 8;
+  const TOTAL_STEPS = 6;
+  const LAST_IMPLEMENTED_STEP = 6;
+
+  const root = document.getElementById('eligibility-checker');
+  if (!root) {
+    console.warn('[EligibilityChecker] root not found');
+  } else {
+    init(root);
+  }
+
+  function init(root: HTMLElement) {
+    const state: Selections = {
+      origin: null,
+      destination: null,
+      airline: null,
+      flightDate: null,
+      issueType: null,
+      delayDuration: null,
+      notificationTiming: null,
+      reroutingOffered: null,
+      deniedBoardingType: null,
+      originalClass: null,
+      actualClass: null,
+      disruptionReason: null,
+      result: null,
+    };
+    let currentStep: number | 'result' = 1;
+
+    // ---------- Data loaders (lazy, cached promise) ----------
+    let airportsPromise: Promise<Airport[]> | null = null;
+    let airlinesPromise: Promise<Airline[]> | null = null;
+
+    const loadAirports = (): Promise<Airport[]> => {
+      if (airportsPromise) return airportsPromise;
+      airportsPromise = import('../data/airports.json').then((mod) => {
+        const raw = mod.default as Record<string, Omit<Airport, 'iataLc' | 'nameLc' | 'cityLc'> & { lat: number; lon: number }>;
+        const list: Airport[] = [];
+        for (const code in raw) {
+          const a = raw[code];
+          if (!a.iata || a.iata.length !== 3) continue;
+          list.push({
+            icao: a.icao,
+            iata: a.iata,
+            name: a.name,
+            city: a.city,
+            country: a.country,
+            lat: a.lat,
+            lon: a.lon,
+            iataLc: a.iata.toLowerCase(),
+            nameLc: (a.name || '').toLowerCase(),
+            cityLc: (a.city || '').toLowerCase(),
+          });
+        }
+        return list;
+      });
+      return airportsPromise;
+    };
+
+    const loadAirlines = (): Promise<Airline[]> => {
+      if (airlinesPromise) return airlinesPromise;
+      airlinesPromise = import('../data/airlines.json').then((mod) => {
+        const raw = mod.default as Array<Omit<Airline, 'iataLc' | 'nameLc'>>;
+        return raw.map((a) => ({
+          iata: a.iata,
+          icao: a.icao || '',
+          name: a.name,
+          country: a.country || '',
+          iataLc: a.iata.toLowerCase(),
+          nameLc: a.name.toLowerCase(),
+        }));
+      });
+      return airlinesPromise;
+    };
+
+    // ---------- Country display ----------
+    let regionNames: Intl.DisplayNames | null = null;
+    try {
+      regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
+    } catch {
+      regionNames = null;
+    }
+    const countryDisplay = (codeOrName: string) => {
+      if (!codeOrName) return '';
+      // ISO-2 airport country codes → display name. Airline countries are already full names.
+      if (codeOrName.length === 2 && codeOrName === codeOrName.toUpperCase()) {
+        try {
+          return regionNames?.of(codeOrName) ?? codeOrName;
+        } catch {
+          return codeOrName;
+        }
+      }
+      return codeOrName;
+    };
+
+    // ---------- Search (shared shape) ----------
+    type Searchable = { iataLc: string; nameLc: string; cityLc?: string };
+    function searchItems<T extends Searchable>(items: T[], query: string): T[] {
+      const q = query.trim().toLowerCase();
+      if (q.length < MIN_CHARS) return [];
+      const results: T[] = [];
+      const seen = new Set<string>();
+      const push = (it: T) => {
+        const key = it.iataLc + '|' + it.nameLc;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        results.push(it);
+        return results.length >= MAX_RESULTS;
+      };
+      for (const it of items) { // tier 1: exact IATA
+        if (it.iataLc === q) { if (push(it)) return results; }
+      }
+      if (q.length <= 3) { // tier 2: IATA starts-with
+        for (const it of items) {
+          if (it.iataLc.startsWith(q)) { if (push(it)) return results; }
+        }
+      }
+      for (const it of items) { // tier 3: name or city starts-with
+        if (it.nameLc.startsWith(q) || (it.cityLc && it.cityLc.startsWith(q))) {
+          if (push(it)) return results;
+        }
+      }
+      for (const it of items) { // tier 4: name or city contains
+        if (it.nameLc.includes(q) || (it.cityLc && it.cityLc.includes(q))) {
+          if (push(it)) return results;
+        }
+      }
+      return results;
+    }
+
+    // ---------- Generic autocomplete ----------
+    type AcConfig<T extends Searchable> = {
+      wrap: HTMLElement;
+      loader: () => Promise<T[]>;
+      formatSelected: (item: T) => string;
+      renderOption: (item: T) => string;
+      onSelect: (item: T) => void;
+      onClear: () => void;
+    };
+
+    function wireAutocomplete<T extends Searchable>(cfg: AcConfig<T>) {
+      const input = cfg.wrap.querySelector<HTMLInputElement>('.ec-ac-input')!;
+      const listbox = cfg.wrap.querySelector<HTMLUListElement>('.ec-ac-list')!;
+      const clearBtn = cfg.wrap.querySelector<HTMLButtonElement>('.ec-ac-clear')!;
+      const listboxId = listbox.id;
+      let currentResults: T[] = [];
+      let activeIndex = -1;
+
+      const closeList = () => {
+        listbox.hidden = true;
+        listbox.innerHTML = '';
+        input.setAttribute('aria-expanded', 'false');
+        input.removeAttribute('aria-activedescendant');
+        currentResults = [];
+        activeIndex = -1;
+      };
+
+      const setActive = (idx: number) => {
+        activeIndex = idx;
+        const items = listbox.querySelectorAll<HTMLLIElement>('.ec-ac-option');
+        items.forEach((el, i) => {
+          const active = i === idx;
+          el.setAttribute('aria-selected', active ? 'true' : 'false');
+          el.classList.toggle('is-active', active);
+          if (active) {
+            input.setAttribute('aria-activedescendant', el.id);
+            const elTop = el.offsetTop;
+            const elBottom = elTop + el.offsetHeight;
+            if (elTop < listbox.scrollTop) listbox.scrollTop = elTop;
+            else if (elBottom > listbox.scrollTop + listbox.clientHeight) {
+              listbox.scrollTop = elBottom - listbox.clientHeight;
+            }
+          }
+        });
+        if (idx < 0) input.removeAttribute('aria-activedescendant');
+      };
+
+      const renderResults = (results: T[], q: string) => {
+        currentResults = results;
+        activeIndex = -1;
+        if (results.length === 0) {
+          listbox.innerHTML = `<li class="ec-ac-empty" role="presentation">No matches for “${escapeHtml(q)}”.</li>`;
+          listbox.hidden = false;
+          input.setAttribute('aria-expanded', 'true');
+          return;
+        }
+        listbox.innerHTML = results
+          .map((a, i) => `
+            <li class="ec-ac-option" id="${listboxId}-opt-${i}" role="option" aria-selected="false" data-index="${i}">
+              ${cfg.renderOption(a)}
+            </li>
+          `)
+          .join('');
+        listbox.hidden = false;
+        input.setAttribute('aria-expanded', 'true');
+      };
+
+      const selectResult = (a: T) => {
+        input.value = cfg.formatSelected(a);
+        input.readOnly = true;
+        input.classList.add('is-selected');
+        clearBtn.hidden = false;
+        closeList();
+        cfg.onSelect(a);
+      };
+
+      const clearSelection = () => {
+        input.value = '';
+        input.readOnly = false;
+        input.classList.remove('is-selected');
+        clearBtn.hidden = true;
+        closeList();
+        cfg.onClear();
+        input.focus();
+      };
+
+      let searchToken = 0;
+      input.addEventListener('input', async () => {
+        if (input.readOnly) return;
+        const q = input.value;
+        if (q.trim().length < MIN_CHARS) { closeList(); return; }
+        const token = ++searchToken;
+        const items = await cfg.loader();
+        if (token !== searchToken) return;
+        renderResults(searchItems(items, q), q);
+      });
+
+      input.addEventListener('focus', () => {
+        if (input.readOnly) return;
+        const q = input.value;
+        if (q.trim().length >= MIN_CHARS && listbox.hidden) {
+          cfg.loader().then((items) => {
+            if (document.activeElement !== input) return;
+            renderResults(searchItems(items, q), q);
+          });
+        }
+        cfg.loader(); // prefetch
+      });
+
+      input.addEventListener('keydown', (e) => {
+        if (input.readOnly) {
+          if (e.key === 'Backspace' || e.key === 'Delete') {
+            e.preventDefault();
+            clearSelection();
+          }
+          return;
+        }
+        switch (e.key) {
+          case 'ArrowDown':
+            e.preventDefault();
+            if (listbox.hidden) {
+              const q = input.value;
+              if (q.trim().length >= MIN_CHARS) {
+                cfg.loader().then((items) => {
+                  renderResults(searchItems(items, q), q);
+                  if (currentResults.length > 0) setActive(0);
+                });
+              }
+              return;
+            }
+            if (currentResults.length === 0) return;
+            setActive((activeIndex + 1) % currentResults.length);
+            break;
+          case 'ArrowUp':
+            e.preventDefault();
+            if (listbox.hidden || currentResults.length === 0) return;
+            setActive(activeIndex <= 0 ? currentResults.length - 1 : activeIndex - 1);
+            break;
+          case 'Enter':
+            if (!listbox.hidden && activeIndex >= 0 && currentResults[activeIndex]) {
+              e.preventDefault();
+              selectResult(currentResults[activeIndex]);
+            }
+            break;
+          case 'Escape':
+            if (!listbox.hidden) { e.preventDefault(); closeList(); }
+            break;
+          case 'Tab':
+            closeList();
+            break;
+        }
+      });
+
+      listbox.addEventListener('mousedown', (e) => e.preventDefault());
+      listbox.addEventListener('click', (e) => {
+        const target = (e.target as HTMLElement).closest<HTMLLIElement>('.ec-ac-option');
+        if (!target) return;
+        const idx = Number(target.dataset.index);
+        const a = currentResults[idx];
+        if (a) selectResult(a);
+      });
+      listbox.addEventListener('mousemove', (e) => {
+        const target = (e.target as HTMLElement).closest<HTMLLIElement>('.ec-ac-option');
+        if (!target) return;
+        const idx = Number(target.dataset.index);
+        if (!Number.isNaN(idx) && idx !== activeIndex) setActive(idx);
+      });
+      clearBtn.addEventListener('click', clearSelection);
+
+      document.addEventListener('click', (e) => {
+        if (!cfg.wrap.contains(e.target as Node)) closeList();
+      });
+    }
+
+    // ---------- Renderers for option rows ----------
+    const renderAirportOption = (a: Airport) => {
+      const country = countryDisplay(a.country);
+      const location = [a.city, country].filter(Boolean).join(', ');
+      return `
+        <span class="ec-ac-opt-name">${escapeHtml(a.name)} <span class="ec-ac-opt-iata">(${escapeHtml(a.iata)})</span></span>
+        <span class="ec-ac-opt-loc">${escapeHtml(location)}</span>
+      `;
+    };
+    const renderAirlineOption = (a: Airline) => {
+      const iata = escapeHtml(a.iata);
+      const country = escapeHtml(a.country);
+      return `
+        <span class="ec-ac-opt-name">${escapeHtml(a.name)}</span>
+        <span class="ec-ac-opt-loc"><span class="ec-ac-opt-iata">${iata}</span>${country ? ' · ' + country : ''}</span>
+      `;
+    };
+    const formatSelected = (a: { iata: string; name: string }) => `${a.name} (${a.iata})`;
+
+    // ---------- Step 1: airports ----------
+    wireAutocomplete<Airport>({
+      wrap: root.querySelector<HTMLElement>('.ec-ac[data-field="origin"]')!,
+      loader: loadAirports,
+      formatSelected,
+      renderOption: renderAirportOption,
+      onSelect: (a) => { state.origin = a; refreshUi(); },
+      onClear: () => { state.origin = null; refreshUi(); },
+    });
+    wireAutocomplete<Airport>({
+      wrap: root.querySelector<HTMLElement>('.ec-ac[data-field="destination"]')!,
+      loader: loadAirports,
+      formatSelected,
+      renderOption: renderAirportOption,
+      onSelect: (a) => { state.destination = a; refreshUi(); },
+      onClear: () => { state.destination = null; refreshUi(); },
+    });
+
+    // ---------- Step 2: airline ----------
+    wireAutocomplete<Airline>({
+      wrap: root.querySelector<HTMLElement>('.ec-ac[data-field="airline"]')!,
+      loader: loadAirlines,
+      formatSelected,
+      renderOption: renderAirlineOption,
+      onSelect: (a) => { state.airline = a; refreshUi(); },
+      onClear: () => { state.airline = null; refreshUi(); },
+    });
+
+    // ---------- Step 3: date ----------
+    const dateInput = root.querySelector<HTMLInputElement>('#ec-date')!;
+    const todayIso = new Date().toISOString().slice(0, 10);
+    const threeYearsAgo = new Date();
+    threeYearsAgo.setFullYear(threeYearsAgo.getFullYear() - 3);
+    dateInput.min = threeYearsAgo.toISOString().slice(0, 10);
+    dateInput.max = todayIso;
+    dateInput.addEventListener('input', () => {
+      const v = dateInput.value;
+      state.flightDate = v && v >= dateInput.min && v <= dateInput.max ? v : null;
+      refreshUi();
+    });
+
+    // ---------- Generic radiogroup helper (Steps 4-6) ----------
+    type RadioController = {
+      setValue: (value: string | null) => void;
+      revalidate: () => void;
+    };
+
+    function wireRadioGroup(
+      container: HTMLElement,
+      onSelect: (value: string | null) => void,
+    ): RadioController {
+      const all = () => Array.from(
+        container.querySelectorAll<HTMLButtonElement>('[role="radio"]'),
+      );
+      const visible = () => all().filter((el) => !el.hidden);
+
+      const applyTabIndex = (selected: HTMLButtonElement | null) => {
+        const vis = visible();
+        // One tab stop per group: the selected option if present, otherwise the first visible option.
+        const tabbable = selected && !selected.hidden ? selected : vis[0];
+        all().forEach((el) => {
+          if (el.hidden) {
+            el.setAttribute('tabindex', '-1');
+          } else {
+            el.setAttribute('tabindex', el === tabbable ? '0' : '-1');
+          }
+        });
+      };
+
+      const select = (el: HTMLButtonElement | null, focus = false) => {
+        all().forEach((b) => {
+          b.setAttribute('aria-checked', 'false');
+          b.classList.remove('is-selected');
+        });
+        if (el && !el.hidden) {
+          el.setAttribute('aria-checked', 'true');
+          el.classList.add('is-selected');
+          applyTabIndex(el);
+          if (focus) el.focus();
+          onSelect(el.dataset.value ?? null);
+        } else {
+          applyTabIndex(null);
+          onSelect(null);
+        }
+      };
+
+      all().forEach((el) => {
+        el.addEventListener('click', () => {
+          if (!el.hidden) select(el);
+        });
+        el.addEventListener('keydown', (e) => {
+          const vis = visible();
+          const idx = vis.indexOf(el);
+          if (idx < 0) return;
+          switch (e.key) {
+            case 'ArrowRight':
+            case 'ArrowDown':
+              e.preventDefault();
+              select(vis[(idx + 1) % vis.length], true);
+              break;
+            case 'ArrowLeft':
+            case 'ArrowUp':
+              e.preventDefault();
+              select(vis[(idx - 1 + vis.length) % vis.length], true);
+              break;
+            case ' ':
+            case 'Enter':
+              e.preventDefault();
+              select(el);
+              break;
+          }
+        });
+      });
+
+      // Initial state: nothing selected, first visible option is tabbable.
+      applyTabIndex(null);
+
+      return {
+        setValue(value) {
+          if (!value) return select(null);
+          const target = all().find((b) => b.dataset.value === value && !b.hidden);
+          select(target ?? null);
+        },
+        revalidate() {
+          const sel = all().find((b) => b.classList.contains('is-selected'));
+          if (sel && sel.hidden) {
+            // The selected option became hidden — drop selection.
+            select(null);
+          } else {
+            applyTabIndex(sel ?? null);
+          }
+        },
+      };
+    }
+
+    // ---------- Wire every radiogroup on the page ----------
+    const radioGroups: Record<string, RadioController> = {};
+    root.querySelectorAll<HTMLElement>('[data-radio-name]').forEach((group) => {
+      const name = group.dataset.radioName!;
+      radioGroups[name] = wireRadioGroup(group, (value) => {
+        handleRadioChange(name, value);
+      });
+    });
+
+    const STEP5_FIELDS = [
+      'delayDuration',
+      'notificationTiming',
+      'reroutingOffered',
+      'deniedBoardingType',
+      'originalClass',
+      'actualClass',
+    ] as const;
+
+    function clearStep5State() {
+      state.delayDuration = null;
+      state.notificationTiming = null;
+      state.reroutingOffered = null;
+      state.deniedBoardingType = null;
+      state.originalClass = null;
+      state.actualClass = null;
+      STEP5_FIELDS.forEach((name) => radioGroups[name]?.setValue(null));
+      resetActualClassVisibility();
+    }
+
+    function updateActualClassVisibility() {
+      const group = root.querySelector<HTMLElement>('[data-radio-name="actualClass"]');
+      if (!group) return;
+      const origRank = state.originalClass
+        ? CABIN_CLASS_ORDER.indexOf(state.originalClass)
+        : -1;
+      group.querySelectorAll<HTMLButtonElement>('[role="radio"]').forEach((el) => {
+        const val = el.dataset.value as CabinClass;
+        const valRank = CABIN_CLASS_ORDER.indexOf(val);
+        // Hide options that aren't strictly lower than the original class.
+        // When no original class is chosen, show all (actual-class options never include "first").
+        el.hidden = origRank !== -1 && valRank <= origRank;
+      });
+      // If the current actualClass became hidden, drop it.
+      if (state.actualClass) {
+        const selectedEl = group.querySelector<HTMLButtonElement>(
+          `[role="radio"][data-value="${state.actualClass}"]`,
+        );
+        if (selectedEl?.hidden) {
+          state.actualClass = null;
+        }
+      }
+      radioGroups['actualClass']?.revalidate();
+    }
+
+    function resetActualClassVisibility() {
+      const group = root.querySelector<HTMLElement>('[data-radio-name="actualClass"]');
+      if (!group) return;
+      // Show every actualClass option (actualClass options never include "first" in the markup).
+      group.querySelectorAll<HTMLButtonElement>('[role="radio"]').forEach((el) => {
+        el.hidden = false;
+      });
+      radioGroups['actualClass']?.revalidate();
+    }
+
+    function handleRadioChange(name: string, value: string | null) {
+      switch (name) {
+        case 'issueType': {
+          const newVal = value as IssueType | null;
+          if (newVal !== state.issueType) {
+            clearStep5State();
+          }
+          state.issueType = newVal;
+          break;
+        }
+        case 'delayDuration':
+          state.delayDuration = value as DelayDuration | null;
+          break;
+        case 'notificationTiming':
+          state.notificationTiming = value as NotificationTiming | null;
+          break;
+        case 'reroutingOffered':
+          state.reroutingOffered = value as ReroutingOffered | null;
+          break;
+        case 'deniedBoardingType':
+          state.deniedBoardingType = value as DeniedBoardingType | null;
+          break;
+        case 'originalClass':
+          state.originalClass = value as CabinClass | null;
+          updateActualClassVisibility();
+          break;
+        case 'actualClass':
+          state.actualClass = value as CabinClass | null;
+          break;
+        case 'disruptionReason':
+          state.disruptionReason = value as DisruptionReason | null;
+          break;
+      }
+      refreshUi();
+    }
+
+    // ---------- Nav buttons ----------
+    root.querySelectorAll<HTMLButtonElement>('.ec-next-btn').forEach((btn) => {
+      btn.addEventListener('click', () => nextStep());
+    });
+    root.querySelectorAll<HTMLButtonElement>('.ec-back-btn').forEach((btn) => {
+      btn.addEventListener('click', () => prevStep());
+    });
+
+    // ---------- Step state machine ----------
+    const isStepValid = (step: number): boolean => {
+      switch (step) {
+        case 1:
+          return !!(state.origin && state.destination && state.origin.iata !== state.destination.iata);
+        case 2:
+          return !!state.airline;
+        case 3:
+          return !!state.flightDate;
+        case 4:
+          return !!state.issueType;
+        case 5:
+          switch (state.issueType) {
+            case 'delayed':
+              return !!state.delayDuration;
+            case 'cancelled':
+              return !!(state.notificationTiming && state.reroutingOffered);
+            case 'denied_boarding':
+              return !!state.deniedBoardingType;
+            case 'downgraded':
+              return !!(state.originalClass && state.actualClass);
+            default:
+              return false;
+          }
+        case 6:
+          // Downgrade cases don't need a reason (EU261 Article 10 — no exempting defense).
+          if (state.issueType === 'downgraded') return true;
+          return !!state.disruptionReason;
+        default:
+          return false;
+      }
+    };
+
+    const nextStep = () => {
+      if (currentStep === 'result') return;
+      if (!isStepValid(currentStep)) return;
+      if (currentStep >= LAST_IMPLEMENTED_STEP) {
+        const input = {
+          origin: state.origin,
+          destination: state.destination,
+          airline: state.airline,
+          flightDate: state.flightDate,
+          issueType: state.issueType,
+          delayDuration: state.delayDuration,
+          notificationTiming: state.notificationTiming,
+          reroutingOffered: state.reroutingOffered,
+          deniedBoardingType: state.deniedBoardingType,
+          originalClass: state.originalClass,
+          actualClass: state.actualClass,
+          disruptionReason: state.disruptionReason,
+        };
+        const result = evaluateEligibility(input) as EligibilityResult;
+        console.log('[EligibilityChecker] Judgment result:', result);
+        state.result = result;
+        currentStep = 'result';
+        renderStep();
+        return;
+      }
+      currentStep += 1;
+      renderStep();
+    };
+    const prevStep = () => {
+      if (currentStep === 'result' || currentStep <= 1) return;
+      currentStep -= 1;
+      renderStep();
+    };
+
+    const renderStep = () => {
+      root.dataset.step = String(currentStep);
+      root.querySelectorAll<HTMLElement>('.ec-step').forEach((el) => {
+        el.classList.toggle('is-active', Number(el.dataset.stepId) === currentStep);
+      });
+
+      // Result step — populate the outcome view, skip numeric-step plumbing.
+      if (currentStep === 'result') {
+        if (state.result) renderResult(state.result);
+        return;
+      }
+
+      const label = root.querySelector<HTMLElement>('.ec-progress-current');
+      if (label) label.textContent = String(currentStep);
+      const fill = root.querySelector<HTMLElement>('.ec-progress-fill');
+      if (fill) fill.style.width = `${(currentStep / TOTAL_STEPS) * 100}%`;
+
+      // Step 5 branch visibility (driven by state.issueType).
+      const step5 = root.querySelector<HTMLElement>('.ec-step[data-step-id="5"]');
+      if (step5) {
+        step5.querySelectorAll<HTMLElement>('.ec-branch').forEach((branch) => {
+          branch.classList.toggle(
+            'is-active',
+            branch.dataset.branch === state.issueType,
+          );
+        });
+      }
+
+      // Step 6 variant visibility — downgrades skip the reason selector.
+      const step6 = root.querySelector<HTMLElement>('.ec-step[data-step-id="6"]');
+      if (step6) {
+        const variant = state.issueType === 'downgraded' ? 'downgraded' : 'default';
+        step6.querySelectorAll<HTMLElement>('.ec-step6-variant').forEach((el) => {
+          el.classList.toggle('is-active', el.dataset.variant === variant);
+        });
+      }
+
+      // Auto-collapse the scope notice on every step change so each step starts clean.
+      const scopeDetails = root.querySelector<HTMLDetailsElement>('.ec-scope-details');
+      if (scopeDetails) scopeDetails.open = false;
+
+      // Focus the first meaningful input of the new step, skipping animation-gated paint.
+      requestAnimationFrame(() => {
+        const active = root.querySelector<HTMLElement>('.ec-step.is-active');
+        if (!active) return;
+        const activeBranch = active.querySelector<HTMLElement>('.ec-branch.is-active') ?? active;
+        const focusTarget =
+          activeBranch.querySelector<HTMLElement>('.ec-ac-input:not([readonly])') ||
+          activeBranch.querySelector<HTMLElement>('.ec-date-input') ||
+          activeBranch.querySelector<HTMLElement>('[role="radio"][aria-checked="true"]:not([hidden])') ||
+          activeBranch.querySelector<HTMLElement>('[role="radio"]:not([hidden])');
+        focusTarget?.focus();
+      });
+    };
+
+    // ---------- Result view ----------
+    const formatCompensation = (comp: CoverageEntry['compensation']): string => {
+      if (!comp) return '—';
+      switch (comp.type) {
+        case 'fixed':
+          return `${comp.currency ?? ''} ${(comp.amount ?? 0).toLocaleString('en-US')}`.trim();
+        case 'range':
+          return `${comp.currency ?? ''} ${(comp.min ?? 0).toLocaleString('en-US')}\u2013${(comp.max ?? 0).toLocaleString('en-US')}`.trim();
+        case 'percentage':
+          return `${comp.value ?? 0}% refund`;
+        case 'actual_damages':
+          return 'Actual damages';
+        case 'assistance + court_damages':
+          return comp.typicalCourt ? `Assistance + ${comp.typicalCourt}` : 'Assistance + possible damages';
+        case 'assistance_only':
+          return 'Assistance only';
+        case 'refund_difference':
+          return `${comp.currency ?? ''} fare-difference refund`.trim();
+        default:
+          return '—';
+      }
+    };
+
+    const renderCoverageCard = (entry: CoverageEntry): string => `
+      <article class="ec-coverage-card">
+        <div class="ec-coverage-header">
+          <span class="ec-coverage-name">${escapeHtml(entry.regulation)}</span>
+          <span class="ec-coverage-amount">${escapeHtml(formatCompensation(entry.compensation))}</span>
+        </div>
+        <p class="ec-coverage-reason">${escapeHtml(entry.reasoning)}</p>
+      </article>
+    `;
+
+    const renderDetailsBody = (result: EligibilityResult): string => {
+      const parts: string[] = [];
+      if (result.notCoveredBy?.length) {
+        parts.push(`
+          <div class="ec-not-covered">
+            <h4>Not covered by</h4>
+            <ul>
+              ${result.notCoveredBy
+                .map((r) => `<li><strong>${escapeHtml(r.regulation)}</strong>: ${escapeHtml(r.reasoning)}</li>`)
+                .join('')}
+            </ul>
+          </div>
+        `);
+      }
+      if (result.notes?.length) {
+        parts.push(`
+          <div class="ec-notes">
+            <h4>Additional notes</h4>
+            <ul>
+              ${result.notes.map((n) => `<li>${escapeHtml(n)}</li>`).join('')}
+            </ul>
+          </div>
+        `);
+      }
+      return parts.join('');
+    };
+
+    const renderOOSAlternatives = (result: EligibilityResult): string => {
+      const reason = (result.outOfScopeReason ?? '').toLowerCase();
+      if (reason.includes('us domestic') || reason.includes('dot')) {
+        return [
+          '<li>File a complaint with the <a href="https://secure.dot.gov/air-travel-complaint" rel="noopener" target="_blank">US DOT Aviation Consumer Protection</a>.</li>',
+          '<li>Check your airline\u2019s Customer Service Plan for voluntary compensation.</li>',
+          '<li>Review your travel insurance for delay or cancellation coverage.</li>',
+        ].join('');
+      }
+      return [
+        '<li>Review the airline\u2019s contract of carriage for voluntary compensation.</li>',
+        '<li>Contact your local consumer-protection authority or aviation regulator.</li>',
+        '<li>Check your travel insurance for delay or cancellation coverage.</li>',
+      ].join('');
+    };
+
+    const buildFlightSummary = (result: EligibilityResult): string => {
+      if (!state.origin || !state.destination || !state.airline) return '';
+      return (
+        `Based on your flight from <strong>${escapeHtml(state.origin.city)} (${escapeHtml(state.origin.iata)})</strong> ` +
+        `to <strong>${escapeHtml(state.destination.city)} (${escapeHtml(state.destination.iata)})</strong> ` +
+        `on ${escapeHtml(state.airline.name)} \u2014 ${result.distance.toLocaleString('en-US')} km.`
+      );
+    };
+
+    const renderResult = (result: EligibilityResult) => {
+      const container = root.querySelector<HTMLElement>('.ec-result');
+      if (!container) return;
+      const variantName = result.outOfScope
+        ? 'out_of_scope'
+        : result.eligible
+          ? 'eligible'
+          : 'not_eligible';
+
+      container.querySelectorAll<HTMLElement>('.ec-result-variant').forEach((v) => {
+        v.classList.toggle('is-active', v.dataset.variant === variantName);
+      });
+      const active = container.querySelector<HTMLElement>(
+        `.ec-result-variant[data-variant="${variantName}"]`,
+      );
+      if (!active) return;
+
+      const summarySlot = active.querySelector<HTMLElement>('[data-slot="verdict-summary"]');
+      if (summarySlot) {
+        if (variantName === 'out_of_scope') {
+          summarySlot.textContent = result.outOfScopeReason ?? '';
+        } else {
+          summarySlot.innerHTML = buildFlightSummary(result);
+        }
+      }
+
+      if (variantName === 'eligible') {
+        const grid = active.querySelector<HTMLElement>('[data-slot="coverage-grid"]');
+        if (grid) grid.innerHTML = result.coverage.map(renderCoverageCard).join('');
+        const details = active.querySelector<HTMLElement>('[data-slot="details-body"]');
+        if (details) details.innerHTML = renderDetailsBody(result);
+        // Reset the accordion each time the result screen is shown.
+        const accordion = active.querySelector<HTMLDetailsElement>('.ec-details');
+        if (accordion) accordion.open = false;
+      } else if (variantName === 'not_eligible') {
+        const list = active.querySelector<HTMLElement>('[data-slot="reason-list"]');
+        if (list) {
+          list.innerHTML = result.notCoveredBy
+            .map((r) => `<li><strong>${escapeHtml(r.regulation)}</strong>: ${escapeHtml(r.reasoning)}</li>`)
+            .join('');
+        }
+      } else if (variantName === 'out_of_scope') {
+        const altList = active.querySelector<HTMLElement>('[data-slot="alt-list"]');
+        if (altList) altList.innerHTML = renderOOSAlternatives(result);
+      }
+
+      // Scroll the widget to the top of the viewport so the verdict is what the
+      // user sees first — without this, they land wherever the Step 6 form left the
+      // scroll position. Then focus the restart button so keyboard users can
+      // easily start over without tabbing through the entire result view.
+      requestAnimationFrame(() => {
+        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        root.scrollIntoView({
+          behavior: prefersReduced ? 'auto' : 'smooth',
+          block: 'start',
+        });
+        const restart = active.querySelector<HTMLButtonElement>('.ec-restart-btn');
+        restart?.focus({ preventScroll: true });
+      });
+    };
+
+    const startOver = () => {
+      // Reset state
+      state.origin = null;
+      state.destination = null;
+      state.airline = null;
+      state.flightDate = null;
+      state.issueType = null;
+      state.delayDuration = null;
+      state.notificationTiming = null;
+      state.reroutingOffered = null;
+      state.deniedBoardingType = null;
+      state.originalClass = null;
+      state.actualClass = null;
+      state.disruptionReason = null;
+      state.result = null;
+
+      // Clear autocomplete inputs
+      root.querySelectorAll<HTMLInputElement>('.ec-ac-input').forEach((input) => {
+        input.value = '';
+        input.readOnly = false;
+        input.classList.remove('is-selected');
+      });
+      root.querySelectorAll<HTMLButtonElement>('.ec-ac-clear').forEach((btn) => {
+        btn.hidden = true;
+      });
+
+      // Clear date input
+      const dateInput = root.querySelector<HTMLInputElement>('#ec-date');
+      if (dateInput) dateInput.value = '';
+
+      // Reset every radio group (Step 4 issue type + all Step 5 branches + Step 6 reason).
+      Object.values(radioGroups).forEach((ctl) => ctl.setValue(null));
+      resetActualClassVisibility();
+
+      // Back to Step 1.
+      currentStep = 1;
+      renderStep();
+      refreshUi();
+    };
+
+    // Wire restart buttons (one per result variant).
+    root.querySelectorAll<HTMLButtonElement>('.ec-restart-btn').forEach((btn) => {
+      btn.addEventListener('click', startOver);
+    });
+
+    const refreshUi = () => {
+      // Next buttons per step
+      root.querySelectorAll<HTMLElement>('.ec-step').forEach((stepEl) => {
+        const stepNum = Number(stepEl.dataset.stepId);
+        const nextBtn = stepEl.querySelector<HTMLButtonElement>('.ec-next-btn');
+        if (nextBtn) nextBtn.disabled = !isStepValid(stepNum);
+      });
+      // Same-airport warning (Step 1)
+      const warning = root.querySelector<HTMLElement>('#ec-warning');
+      if (warning) {
+        const bothSelected = !!(state.origin && state.destination);
+        const sameAirport = bothSelected && state.origin!.iata === state.destination!.iata;
+        warning.classList.toggle('is-visible', sameAirport);
+      }
+    };
+
+    // ---------- Initial render ----------
+    renderStep();
+    refreshUi();
+
+    function escapeHtml(s: string): string {
+      return s
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+  }
+</script>
+
+<style>
+  /* =========================================
+     Outer shell (pulsing accent container)
+     ========================================= */
+  .checker-shell {
+    max-width: 720px;
+    margin-inline: auto;
+    padding: var(--space-12) var(--space-8);
+    background: linear-gradient(
+      180deg,
+      var(--accent-bg) 0%,
+      var(--bg-surface) 40%
+    );
+    border: 2px solid color-mix(in srgb, var(--accent) 60%, transparent);
+    border-radius: var(--radius-xl);
+    box-shadow:
+      0 0 0 4px var(--accent-bg),
+      0 12px 40px -8px rgba(0, 102, 255, 0.25);
+    animation: checker-pulse 3s ease-in-out infinite;
+    transition:
+      transform var(--transition-base),
+      box-shadow var(--transition-base);
+  }
+
+  .checker-shell:hover {
+    animation-play-state: paused;
+    border-color: var(--accent);
+    box-shadow:
+      0 0 0 4px var(--accent-bg),
+      0 16px 48px -8px rgba(0, 102, 255, 0.4);
+  }
+
+  @keyframes checker-pulse {
+    0%, 100% {
+      box-shadow:
+        0 0 0 4px var(--accent-bg),
+        0 12px 40px -8px rgba(0, 102, 255, 0.25);
+    }
+    50% {
+      box-shadow:
+        0 0 0 10px var(--accent-bg),
+        0 18px 52px -8px rgba(0, 102, 255, 0.45);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .checker-shell {
+      animation: none;
+    }
+  }
+
+  /* =========================================
+     Progress indicator
+     ========================================= */
+  .ec-progress {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-8);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .ec-progress-label {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+
+  .ec-progress-bar {
+    flex: 1;
+    height: 6px;
+    background-color: var(--border-default);
+    border-radius: var(--radius-full);
+    margin-left: var(--space-4);
+    overflow: hidden;
+  }
+
+  .ec-progress-fill {
+    height: 100%;
+    width: 16.6667%;
+    background-color: var(--accent);
+    border-radius: var(--radius-full);
+    transition: width var(--transition-base);
+  }
+
+  /* =========================================
+     Step section (one visible at a time)
+     ========================================= */
+  .ec-step {
+    display: none;
+  }
+
+  .ec-step.is-active {
+    display: block;
+    animation: step-fade-in var(--transition-base) ease;
+  }
+
+  @keyframes step-fade-in {
+    from {
+      opacity: 0;
+      transform: translateX(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ec-step.is-active {
+      animation: none;
+    }
+  }
+
+  .ec-step-head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    margin-bottom: var(--space-8);
+  }
+
+  .ec-step-counter {
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-semibold);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .ec-step-title {
+    font-size: var(--fs-2xl);
+    font-weight: var(--fw-semibold);
+    color: var(--text-primary);
+    line-height: var(--lh-tight);
+    margin: 0;
+  }
+
+  .ec-step-sub {
+    font-size: var(--fs-base);
+    color: var(--text-secondary);
+    margin: 0;
+  }
+
+  /* =========================================
+     Fields + label / hint
+     ========================================= */
+  .ec-fields {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  @media (min-width: 640px) {
+    .ec-fields {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-4);
+    }
+  }
+
+  .ec-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    min-width: 0;
+  }
+
+  .ec-label {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    color: var(--text-primary);
+  }
+
+  .ec-hint {
+    font-size: var(--fs-sm);
+    color: var(--text-tertiary);
+    margin: 0 0 var(--space-2);
+  }
+
+  .ec-hint-format {
+    margin-top: calc(var(--space-1) * -1);
+    margin-bottom: var(--space-4);
+    font-size: var(--fs-xs);
+    color: var(--text-tertiary);
+  }
+
+  /* =========================================
+     Autocomplete (shared by airport + airline)
+     ========================================= */
+  .ec-ac {
+    position: relative;
+  }
+
+  .ec-ac-inputwrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .ec-ac-icon {
+    position: absolute;
+    left: var(--space-3);
+    color: var(--text-tertiary);
+    pointer-events: none;
+    transform: rotate(-45deg);
+  }
+
+  .ec-ac-icon-flip {
+    transform: rotate(45deg) scaleX(-1);
+  }
+
+  .ec-ac-input {
+    width: 100%;
+    min-height: 48px;
+    padding: var(--space-3) var(--space-8) var(--space-3) calc(var(--space-3) + 18px + var(--space-3));
+    font-family: inherit;
+    font-size: var(--fs-base);
+    color: var(--text-primary);
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    transition:
+      border-color var(--transition-fast),
+      box-shadow var(--transition-fast);
+  }
+
+  .ec-ac-input::placeholder {
+    color: var(--text-tertiary);
+  }
+
+  .ec-ac-input:hover:not(:focus):not([readonly]) {
+    border-color: var(--border-strong);
+  }
+
+  .ec-ac-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
+  }
+
+  .ec-ac-input.is-selected {
+    background-color: var(--accent-bg);
+    border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+    color: var(--text-primary);
+    font-weight: var(--fw-medium);
+    cursor: default;
+  }
+
+  .ec-ac-input[readonly] {
+    caret-color: transparent;
+  }
+
+  .ec-ac-clear {
+    position: absolute;
+    right: var(--space-2);
+    top: 50%;
+    transform: translateY(-50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    color: var(--text-secondary);
+    background-color: transparent;
+    border: none;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition:
+      background-color var(--transition-fast),
+      color var(--transition-fast);
+  }
+
+  .ec-ac-clear:hover {
+    background-color: var(--bg-muted);
+    color: var(--text-primary);
+  }
+
+  .ec-ac-clear:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .ec-ac-list {
+    position: absolute;
+    top: calc(100% + var(--space-2));
+    left: 0;
+    right: 0;
+    z-index: 20;
+    max-height: 320px;
+    overflow: hidden auto;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+  }
+
+  .ec-ac-option {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: var(--space-3) var(--space-4);
+    background-color: var(--bg-surface);
+    border-bottom: 1px solid var(--border-default);
+    cursor: pointer;
+    transition:
+      background-color var(--transition-fast),
+      box-shadow var(--transition-fast);
+  }
+
+  .ec-ac-option:last-child {
+    border-bottom: none;
+  }
+
+  .ec-ac-option:hover,
+  .ec-ac-option.is-active {
+    background-color: var(--accent-bg);
+    box-shadow: inset 4px 0 0 var(--accent);
+  }
+
+  .ec-ac-opt-name {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    color: var(--text-primary);
+    line-height: var(--lh-snug);
+  }
+
+  .ec-ac-opt-iata {
+    font-family: var(--font-mono);
+    font-weight: var(--fw-regular);
+    color: var(--text-secondary);
+  }
+
+  .ec-ac-opt-loc {
+    font-size: var(--fs-xs);
+    color: var(--text-tertiary);
+  }
+
+  .ec-ac-empty {
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--fs-sm);
+    color: var(--text-tertiary);
+  }
+
+  /* =========================================
+     Date input
+     ========================================= */
+  .ec-date-input {
+    width: 100%;
+    max-width: 320px;
+    min-height: 48px;
+    padding: var(--space-3) var(--space-4);
+    font-family: inherit;
+    font-size: var(--fs-base);
+    color: var(--text-primary);
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    transition:
+      border-color var(--transition-fast),
+      box-shadow var(--transition-fast);
+  }
+
+  .ec-date-input:hover:not(:focus) {
+    border-color: var(--border-strong);
+  }
+
+  .ec-date-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-bg);
+  }
+
+  .ec-date-input::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity var(--transition-fast);
+  }
+
+  .ec-date-input::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+  }
+
+  :global([data-theme="dark"]) .ec-date-input::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+  }
+
+  /* =========================================
+     Issue-type radio cards
+     ========================================= */
+  .ec-issue-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+  }
+
+  @media (min-width: 640px) {
+    .ec-issue-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .ec-issue-option {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-6);
+    text-align: left;
+    font-family: inherit;
+    background-color: var(--bg-surface);
+    border: 2px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition:
+      border-color var(--transition-fast),
+      background-color var(--transition-fast),
+      box-shadow var(--transition-fast);
+  }
+
+  .ec-issue-option:hover {
+    border-color: var(--accent);
+    background-color: var(--accent-bg);
+  }
+
+  .ec-issue-option:focus-visible {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
+  }
+
+  .ec-issue-option.is-selected {
+    border-color: var(--accent);
+    background-color: var(--accent-bg);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
+  }
+
+  .ec-issue-icon {
+    font-size: var(--fs-2xl);
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg-muted);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    transition:
+      background-color var(--transition-fast),
+      color var(--transition-fast);
+  }
+
+  .ec-issue-option.is-selected .ec-issue-icon {
+    background-color: var(--accent);
+    color: var(--text-inverse);
+  }
+
+  :global([data-theme="dark"]) .ec-issue-option.is-selected .ec-issue-icon {
+    color: var(--bg-base);
+  }
+
+  .ec-issue-title {
+    font-size: var(--fs-base);
+    font-weight: var(--fw-semibold);
+    color: var(--text-primary);
+  }
+
+  .ec-issue-desc {
+    font-size: var(--fs-sm);
+    color: var(--text-secondary);
+    line-height: var(--lh-relaxed);
+  }
+
+  /* =========================================
+     Inline warning (same-airport)
+     ========================================= */
+  .ec-warning {
+    display: none;
+    margin: var(--space-4) 0 0;
+    padding: var(--space-3) var(--space-4);
+    background-color: var(--error-bg);
+    border: 1px solid var(--error);
+    border-radius: var(--radius-md);
+    color: var(--error);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    text-align: center;
+  }
+
+  .ec-warning.is-visible {
+    display: block;
+  }
+
+  /* =========================================
+     Nav row (Back / Next)
+     ========================================= */
+  .ec-nav {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: var(--space-3);
+    margin-top: var(--space-8);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .ec-back-btn {
+    margin-right: auto; /* push Next to the right when Back is present */
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 44px;
+    padding: var(--space-2) var(--space-6);
+    font-family: inherit;
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    color: var(--text-secondary);
+    background-color: transparent;
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition:
+      background-color var(--transition-fast),
+      border-color var(--transition-fast),
+      color var(--transition-fast);
+  }
+
+  .ec-back-btn:hover {
+    background-color: var(--bg-muted);
+    border-color: var(--border-strong);
+    color: var(--text-primary);
+  }
+
+  .ec-back-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .ec-next-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    min-height: 44px;
+    padding: var(--space-2) var(--space-6);
+    font-family: inherit;
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--text-inverse);
+    background-color: var(--accent);
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition:
+      background-color var(--transition-fast),
+      border-color var(--transition-fast),
+      color var(--transition-fast),
+      transform var(--transition-fast);
+  }
+
+  :global([data-theme="dark"]) .ec-next-btn {
+    color: var(--bg-base);
+  }
+
+  .ec-next-btn:hover:not(:disabled) {
+    background-color: var(--accent-hover);
+    transform: translateY(-1px);
+  }
+
+  .ec-next-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .ec-next-btn:disabled {
+    background-color: var(--bg-muted);
+    color: var(--text-tertiary);
+    border-color: var(--border-default);
+    cursor: not-allowed;
+  }
+
+  :global([data-theme="dark"]) .ec-next-btn:disabled {
+    color: var(--text-tertiary);
+  }
+
+  /* =========================================
+     Step-4 arrival-vs-departure explainer
+     ========================================= */
+  .ec-issue-note {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+    padding: var(--space-4);
+    background-color: var(--bg-muted);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius-sm);
+    font-size: var(--fs-sm);
+    color: var(--text-secondary);
+    line-height: var(--lh-relaxed);
+  }
+
+  .ec-issue-note-icon {
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .ec-issue-note strong {
+    color: var(--text-primary);
+    font-weight: var(--fw-semibold);
+  }
+
+  .ec-issue-note em {
+    font-style: italic;
+    color: var(--text-primary);
+  }
+
+  /* =========================================
+     Step 5 branched follow-up + choice cards
+     ========================================= */
+  .ec-branch,
+  .ec-step6-variant {
+    display: none;
+  }
+
+  .ec-branch.is-active,
+  .ec-step6-variant.is-active {
+    display: block;
+  }
+
+  .ec-branch-question + .ec-branch-question {
+    margin-top: var(--space-8);
+  }
+
+  .ec-branch-question-title {
+    margin: 0 0 var(--space-2);
+    font-size: var(--fs-base);
+    font-weight: var(--fw-semibold);
+    color: var(--text-primary);
+    line-height: var(--lh-snug);
+  }
+
+  .ec-branch-question-hint {
+    margin: 0 0 var(--space-3);
+    font-size: var(--fs-sm);
+    color: var(--text-tertiary);
+    line-height: var(--lh-relaxed);
+  }
+
+  .ec-choice-group {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+  }
+
+  @media (min-width: 640px) {
+    .ec-choice-group:not(.is-single-col) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .ec-choice-option {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: var(--space-3) var(--space-4);
+    text-align: left;
+    font-family: inherit;
+    background-color: var(--bg-surface);
+    border: 1.5px solid var(--border-default);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition:
+      border-color var(--transition-fast),
+      background-color var(--transition-fast),
+      box-shadow var(--transition-fast);
+  }
+
+  .ec-choice-option:hover {
+    border-color: var(--accent);
+    background-color: var(--accent-bg);
+  }
+
+  .ec-choice-option:focus-visible {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
+  }
+
+  .ec-choice-option.is-selected {
+    border-color: var(--accent);
+    background-color: var(--accent-bg);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
+  }
+
+  .ec-choice-option[hidden] {
+    display: none;
+  }
+
+  .ec-choice-title {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--text-primary);
+    line-height: var(--lh-snug);
+  }
+
+  .ec-choice-subtitle {
+    font-size: var(--fs-xs);
+    color: var(--text-secondary);
+    line-height: var(--lh-snug);
+  }
+
+  /* =========================================
+     Scope-awareness disclaimer (<details>)
+     ========================================= */
+  .ec-scope-notice {
+    margin-top: var(--space-8);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .ec-scope-details {
+    font-size: var(--fs-sm);
+    color: var(--text-secondary);
+  }
+
+  .ec-scope-summary {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    cursor: pointer;
+    color: var(--text-secondary);
+    font-weight: var(--fw-medium);
+    padding: var(--space-2);
+    margin: calc(var(--space-2) * -1);
+    border-radius: var(--radius-sm);
+    list-style: none;
+    transition:
+      background-color var(--transition-fast),
+      color var(--transition-fast);
+  }
+
+  .ec-scope-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .ec-scope-summary:hover {
+    background-color: var(--bg-muted);
+    color: var(--text-primary);
+  }
+
+  .ec-scope-summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .ec-scope-info-icon {
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .ec-scope-label {
+    flex: 1;
+  }
+
+  .ec-scope-chevron {
+    color: var(--text-tertiary);
+    flex-shrink: 0;
+    transition:
+      transform var(--transition-base),
+      color var(--transition-fast);
+  }
+
+  .ec-scope-summary:hover .ec-scope-chevron {
+    color: var(--text-primary);
+  }
+
+  .ec-scope-details[open] .ec-scope-chevron {
+    transform: rotate(180deg);
+    color: var(--accent);
+  }
+
+  .ec-scope-details[open] .ec-scope-summary {
+    color: var(--text-primary);
+  }
+
+  .ec-scope-content {
+    margin-top: var(--space-3);
+    padding: var(--space-4);
+    background-color: var(--bg-muted);
+    border-radius: var(--radius-md);
+    line-height: var(--lh-relaxed);
+  }
+
+  .ec-scope-content p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: var(--fs-sm);
+  }
+
+  .ec-scope-content p + p,
+  .ec-scope-content ul + p {
+    margin-top: var(--space-3);
+  }
+
+  .ec-scope-content ul {
+    list-style: none;
+    padding: 0;
+    margin: var(--space-3) 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .ec-scope-content li {
+    font-size: var(--fs-sm);
+    color: var(--text-secondary);
+    padding-left: var(--space-4);
+    position: relative;
+  }
+
+  .ec-scope-content li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: var(--fw-bold);
+  }
+
+  .ec-scope-content strong {
+    color: var(--text-primary);
+    font-weight: var(--fw-semibold);
+  }
+
+  .ec-scope-gap {
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  /* =========================================
+     Result view (shown after "Check eligibility")
+     ========================================= */
+  .ec-result {
+    display: none;
+  }
+
+  [data-step="result"] .ec-result {
+    display: block;
+    animation: step-fade-in var(--transition-base) ease;
+  }
+
+  /* Hide everything that only belongs to the form flow. */
+  [data-step="result"] .ec-progress,
+  [data-step="result"] .ec-nav,
+  [data-step="result"] .ec-scope-notice,
+  [data-step="result"] .ec-step {
+    display: none !important;
+  }
+
+  .ec-result-variant {
+    display: none;
+  }
+
+  .ec-result-variant.is-active {
+    display: block;
+  }
+
+  /* Verdict hero */
+  .ec-verdict {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--space-3);
+    padding: var(--space-8) var(--space-4);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-8);
+  }
+
+  .ec-verdict-positive {
+    background: linear-gradient(180deg, var(--success-bg) 0%, var(--bg-surface) 100%);
+    border: 1px solid var(--success);
+  }
+
+  .ec-verdict-positive .ec-verdict-icon {
+    color: var(--success);
+    background-color: var(--bg-surface);
+    border: 2px solid var(--success);
+  }
+
+  .ec-verdict-neutral {
+    background: linear-gradient(180deg, var(--bg-muted) 0%, var(--bg-surface) 100%);
+    border: 1px solid var(--border-default);
+  }
+
+  .ec-verdict-neutral .ec-verdict-icon {
+    color: var(--text-secondary);
+    background-color: var(--bg-surface);
+    border: 2px solid var(--border-default);
+  }
+
+  .ec-verdict-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ec-verdict-title {
+    font-size: var(--fs-2xl);
+    font-weight: var(--fw-bold);
+    color: var(--text-primary);
+    line-height: var(--lh-tight);
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+
+  @media (min-width: 640px) {
+    .ec-verdict-title {
+      font-size: var(--fs-3xl);
+    }
+  }
+
+  .ec-verdict-summary {
+    font-size: var(--fs-base);
+    color: var(--text-secondary);
+    line-height: var(--lh-relaxed);
+    max-width: 56ch;
+    margin: 0;
+  }
+
+  .ec-verdict-summary strong {
+    color: var(--text-primary);
+    font-weight: var(--fw-semibold);
+  }
+
+  /* Section heading (Applicable regulations / What to do next / etc.) */
+  .ec-section-heading {
+    font-size: var(--fs-base);
+    font-weight: var(--fw-semibold);
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0 0 var(--space-4);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  /* Coverage cards */
+  .ec-coverage {
+    margin-bottom: var(--space-8);
+  }
+
+  .ec-coverage-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+
+  @media (min-width: 640px) {
+    .ec-coverage-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .ec-coverage-card {
+    padding: var(--space-6);
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-left: 4px solid var(--success);
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .ec-coverage-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .ec-coverage-name {
+    font-size: var(--fs-base);
+    font-weight: var(--fw-bold);
+    color: var(--text-primary);
+  }
+
+  .ec-coverage-amount {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xl);
+    font-weight: var(--fw-bold);
+    color: var(--success);
+    letter-spacing: -0.02em;
+  }
+
+  .ec-coverage-reason {
+    font-size: var(--fs-sm);
+    color: var(--text-secondary);
+    line-height: var(--lh-relaxed);
+    margin: 0;
+  }
+
+  /* Two-path CTA */
+  .ec-cta {
+    margin-bottom: var(--space-8);
+  }
+
+  /* Secondary "claim it yourself" link — intentionally low visual weight. */
+  .ec-cta-alt {
+    margin-top: var(--space-8);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--border-subtle);
+    text-align: center;
+  }
+
+  .ec-cta-self-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--fs-sm);
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    transition:
+      color var(--transition-fast),
+      background-color var(--transition-fast);
+  }
+
+  .ec-cta-self-link:hover {
+    color: var(--accent);
+    background-color: var(--accent-bg);
+    text-decoration: none;
+  }
+
+  .ec-cta-self-link svg {
+    flex-shrink: 0;
+    transition: transform var(--transition-fast);
+  }
+
+  .ec-cta-self-link:hover svg {
+    transform: translate(2px, -2px);
+  }
+
+  .ec-cta-specialists-header {
+    margin-bottom: var(--space-4);
+  }
+
+  .ec-cta-specialists-title {
+    font-size: var(--fs-lg);
+    font-weight: var(--fw-semibold);
+    color: var(--text-primary);
+    margin: var(--space-1) 0 0;
+  }
+
+  .ec-cta-specialists-desc {
+    font-size: var(--fs-sm);
+    color: var(--text-secondary);
+    line-height: var(--lh-relaxed);
+    margin: var(--space-2) 0 0;
+  }
+
+  .ec-service-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+
+  @media (min-width: 640px) {
+    .ec-service-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .ec-service-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-4);
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: inherit;
+    transition:
+      border-color var(--transition-fast),
+      transform var(--transition-fast),
+      box-shadow var(--transition-fast);
+  }
+
+  .ec-service-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .ec-service-name {
+    font-size: var(--fs-base);
+    font-weight: var(--fw-bold);
+    color: var(--text-primary);
+  }
+
+  .ec-service-detail {
+    font-size: var(--fs-xs);
+    color: var(--text-secondary);
+    line-height: var(--lh-relaxed);
+    flex: 1;
+  }
+
+  .ec-service-cta {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--accent);
+    margin-top: var(--space-1);
+  }
+
+  /* Details accordion (result-view version; keyed to .ec-details inside .ec-result) */
+  .ec-result .ec-details {
+    margin-bottom: var(--space-8);
+    background-color: var(--bg-muted);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+  }
+
+  .ec-details-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    list-style: none;
+    font-weight: var(--fw-medium);
+    color: var(--text-secondary);
+    padding: var(--space-2);
+    margin: calc(var(--space-2) * -1);
+    border-radius: var(--radius-sm);
+    transition:
+      color var(--transition-fast),
+      background-color var(--transition-fast);
+  }
+
+  .ec-details-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .ec-details-summary:hover {
+    background-color: var(--bg-surface);
+    color: var(--text-primary);
+  }
+
+  .ec-details-summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .ec-details-summary svg {
+    transition: transform var(--transition-base);
+    flex-shrink: 0;
+  }
+
+  .ec-result .ec-details[open] .ec-details-summary {
+    color: var(--text-primary);
+    margin-bottom: var(--space-3);
+  }
+
+  .ec-result .ec-details[open] .ec-details-summary svg {
+    transform: rotate(180deg);
+    color: var(--accent);
+  }
+
+  .ec-details-body {
+    padding: var(--space-3) 0;
+    font-size: var(--fs-sm);
+    color: var(--text-secondary);
+    line-height: var(--lh-relaxed);
+  }
+
+  .ec-details-body h4 {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--text-primary);
+    margin: var(--space-3) 0 var(--space-2);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .ec-details-body ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .ec-details-body li {
+    padding-left: var(--space-4);
+    position: relative;
+  }
+
+  .ec-details-body li::before {
+    content: '\2022';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+  }
+
+  .ec-details-body strong {
+    color: var(--text-primary);
+    font-weight: var(--fw-semibold);
+  }
+
+  /* Reasons & alternatives (not-eligible / out-of-scope variants) */
+  .ec-reasons,
+  .ec-alternatives {
+    margin-bottom: var(--space-6);
+  }
+
+  .ec-reason-list,
+  .ec-alt-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .ec-reason-list li,
+  .ec-alt-list li {
+    padding: var(--space-3) var(--space-4);
+    background-color: var(--bg-muted);
+    border-left: 3px solid var(--border-default);
+    border-radius: var(--radius-sm);
+    font-size: var(--fs-sm);
+    color: var(--text-secondary);
+    line-height: var(--lh-relaxed);
+  }
+
+  .ec-reason-list li strong,
+  .ec-alt-list li strong {
+    color: var(--text-primary);
+    font-weight: var(--fw-semibold);
+  }
+
+  .ec-alt-list li a {
+    color: var(--accent);
+    font-weight: var(--fw-medium);
+  }
+
+  /* Disclaimer */
+  .ec-disclaimer {
+    font-size: var(--fs-xs);
+    color: var(--text-tertiary);
+    line-height: var(--lh-relaxed);
+    text-align: center;
+    max-width: 56ch;
+    margin: var(--space-6) auto var(--space-4);
+    padding: var(--space-4);
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  /* Restart button — centred below everything in each variant */
+  .ec-restart-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin: var(--space-4) auto 0;
+    padding: var(--space-3) var(--space-6);
+    background-color: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    font-family: inherit;
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    cursor: pointer;
+    transition:
+      background-color var(--transition-fast),
+      border-color var(--transition-fast),
+      color var(--transition-fast);
+  }
+
+  .ec-restart-btn:hover {
+    background-color: var(--bg-muted);
+    border-color: var(--border-strong);
+    color: var(--text-primary);
+  }
+
+  .ec-restart-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+</style>
