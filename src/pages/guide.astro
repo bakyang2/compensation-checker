@@ -1,0 +1,900 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// HowTo JSON-LD schema — each step summarised as plain prose so crawlers
+// and AI citation engines get clean text, not markup.
+const howToSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'How to Claim Flight Compensation Yourself',
+  description:
+    'Step-by-step guide to claiming flight delay compensation directly from the airline. Free template letter, regulation references, and escalation options for EU261, UK261, and APPR.',
+  step: [
+    {
+      '@type': 'HowToStep',
+      name: 'Gather Your Documents',
+      text: `Collect the booking confirmation, boarding pass, and ID, plus proof of the disruption (cancellation email, delay screenshots, photos of departure boards). Also gather receipts for any out-of-pocket expenses and any evidence that contradicts an "extraordinary circumstances" defense.`,
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'Determine Which Law Applies',
+      text: `Identify the right regulation based on your route and airline. EU261 covers EU/EEA departures on any airline and EU arrivals on EU carriers. UK261 covers the UK equivalents. APPR covers Canadian airports or Canadian airlines. Montreal Convention covers international flights for actual damages. ANAC 400/2022 covers Brazil, and Israel Aviation Services Law covers Israeli routes.`,
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'Write the Demand Letter',
+      text: `Send a formal claim that cites the applicable regulation and article, states the specific disruption (delay, cancellation, denied boarding, or downgrade), and demands the exact compensation amount in cash. Keep it short, factual, and firm. Use the template provided on this page as a starting point.`,
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'Send and Follow Up',
+      text: `Submit the letter through the airline's official complaints page or form — find it via the airline's Help or Contact section (look for "Feedback", "Customer Relations", or "EU261"). Expect a response in 14-30 days. If the airline offers vouchers or miles, decline in writing and restate your right to full cash compensation. Send a polite follow-up after 30 days of silence.`,
+    },
+    {
+      '@type': 'HowToStep',
+      name: 'Escalate When Denied',
+      text: `If the airline refuses, challenge their reasoning with specific evidence — for technical issues, cite Wallentin-Hermann v. Alitalia (2008); for staff strikes, cite Krüsemann v. TUIfly (2018). If they still refuse, escalate to the national enforcement body (EU authorities, UK Civil Aviation Authority, or the Canadian Transportation Agency). Small claims court is a last resort — typically available without a lawyer, and the airline pays your costs if you win.`,
+    },
+  ],
+};
+
+const howToSchemaJson = JSON.stringify(howToSchema).replace(/</g, '\\u003c');
+
+// Template letter kept as a JS string so the Copy button can copy it
+// verbatim, independent of any rendering whitespace in the <pre>.
+const templateLetter = `Subject: Compensation Claim under EU Regulation 261/2004 — Flight [FLIGHT NUMBER] on [DATE]
+
+Dear [Airline] Customer Service Team,
+
+I am writing to claim compensation under EU Regulation 261/2004 for the disruption to my flight [FLIGHT NUMBER] from [ORIGIN] to [DESTINATION] on [DATE].
+
+Booking reference: [PNR / BOOKING CODE]
+Passenger name: [FULL NAME]
+
+The flight [was delayed by X hours at arrival / was cancelled with less than 14 days' notice / was overbooked and I was denied boarding involuntarily].
+
+Under Article [7 for delay/cancellation, 10 for downgrade] of EU Regulation 261/2004, I am entitled to compensation of EUR [AMOUNT] based on the flight distance of approximately [X] km.
+
+Please transfer this amount to the following account within 14 days:
+
+[YOUR BANK DETAILS or "Please confirm acceptable payment methods."]
+
+I have attached my booking confirmation, boarding pass, and evidence of the disruption for your reference. If you believe this claim is not valid, please provide a specific reason citing applicable regulations.
+
+I look forward to your response within 14 days of this letter. After that period, I will escalate this claim to [the appropriate national enforcement body — e.g., the UK Civil Aviation Authority for UK flights, or relevant national authorities for EU flights].
+
+Sincerely,
+[YOUR NAME]
+[DATE]
+[EMAIL]
+[PHONE (optional)]`;
+---
+
+<Layout
+  title="How to Claim Flight Compensation Yourself — EU261, UK261, APPR"
+  description="Step-by-step guide to claiming flight delay compensation directly from the airline. Free template letter, regulation references, and escalation options for EU261, UK261, and APPR."
+>
+  <script type="application/ld+json" is:inline set:html={howToSchemaJson} />
+
+  <!-- HERO -->
+  <section class="guide-hero">
+    <div class="container">
+      <a href="/" class="guide-back-link">← Back to eligibility checker</a>
+      <h1 class="guide-hero-title">How to Claim Flight Compensation Yourself</h1>
+      <p class="guide-hero-subtitle">
+        Skip the service fee by claiming directly from the airline. This guide covers EU261, UK261, APPR, Montreal Convention, and other major regulations.
+      </p>
+    </div>
+  </section>
+
+  <!-- BODY -->
+  <section class="guide-body">
+    <div class="container">
+      <!-- INTRO BOX -->
+      <aside class="guide-intro-box">
+        <p>
+          You can claim flight compensation yourself for free. Airlines are legally required to respond, though many will try to delay or deny valid claims. This guide walks you through the process step by step.
+        </p>
+        <p>
+          If you'd rather let specialists handle the paperwork and any legal action, <a href="#when-a-service-makes-sense">see our recommended services at the bottom of this page</a>.
+        </p>
+      </aside>
+
+      <!-- ================================================= -->
+      <!-- STEP 1 -->
+      <!-- ================================================= -->
+      <section class="guide-step" id="step-1-documents">
+        <header class="guide-step-head">
+          <span class="guide-step-badge" aria-hidden="true">1</span>
+          <h2 class="guide-step-title">Gather Your Documents</h2>
+        </header>
+
+        <p>
+          Before you write anything, collect everything you'll need. Most claims fail or take months to resolve because the passenger didn't have clear evidence.
+        </p>
+
+        <h3 class="guide-subsection">Required for any claim</h3>
+        <ul>
+          <li>Booking confirmation or e-ticket (shows flight number, date, route, ticket price)</li>
+          <li>Boarding pass (digital screenshot or physical scan)</li>
+          <li>Your passport or ID (for identity verification)</li>
+          <li>Proof of the disruption — one or more of: cancellation email, delay screenshot from the airline app, photo of the departure board, text message from the airline</li>
+        </ul>
+
+        <h3 class="guide-subsection">Strengthens your claim</h3>
+        <ul>
+          <li>Receipts for out-of-pocket expenses: meals, hotels, alternative transport, phone calls</li>
+          <li>Photos of information boards showing the delay time</li>
+          <li>Screenshots of any airline communication (denied compensation, offered vouchers, etc.)</li>
+          <li>The original flight's scheduled arrival vs actual arrival time</li>
+          <li>If the airline blamed extraordinary circumstances, any evidence that contradicts them (other flights left on time, weather wasn't severe, etc.)</li>
+        </ul>
+
+        <aside class="guide-tip-box" role="note">
+          <svg class="guide-tip-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 21h6"/>
+            <path d="M12 17v4"/>
+            <path d="M12 3a6 6 0 0 0-4 10.5c1.2 1 1.8 2.2 2 3.5h4c.2-1.3.8-2.5 2-3.5A6 6 0 0 0 12 3Z"/>
+          </svg>
+          <span>
+            <strong>Pro tip:</strong> Save everything as PDF and put it all in one folder. Most airline complaint portals only accept PDF, JPG, or PNG under 10 MB each.
+          </span>
+        </aside>
+      </section>
+
+      <!-- ================================================= -->
+      <!-- STEP 2 -->
+      <!-- ================================================= -->
+      <section class="guide-step" id="step-2-regulation">
+        <header class="guide-step-head">
+          <span class="guide-step-badge" aria-hidden="true">2</span>
+          <h2 class="guide-step-title">Determine Which Law Applies</h2>
+        </header>
+
+        <p>
+          The rules are different depending on where you fly. Picking the right one matters. Citing the wrong regulation weakens your case.
+        </p>
+
+        <h3 class="guide-subsection">Quick lookup</h3>
+        <ul>
+          <li>Departing EU/EEA on any airline → <strong>EU261</strong></li>
+          <li>Arriving EU/EEA on an EU-licensed airline → <strong>EU261</strong></li>
+          <li>Departing UK on any airline → <strong>UK261</strong></li>
+          <li>Arriving UK on a UK-licensed airline → <strong>UK261</strong></li>
+          <li>Canadian airline or Canadian airports → <strong>APPR</strong></li>
+          <li>International flight (any route) with actual out-of-pocket damages → <strong>Montreal Convention</strong></li>
+          <li>Departing Brazil or Brazilian airline → <strong>ANAC 400/2022</strong></li>
+          <li>Departing Israel or Israeli airline → <strong>Israel Aviation Services Law</strong></li>
+        </ul>
+
+        <aside class="guide-tip-box" role="note">
+          <svg class="guide-tip-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 16v-4"/>
+            <path d="M12 8h.01"/>
+          </svg>
+          <span>
+            Unsure which applies? Use our <a href="/">Eligibility Checker</a> — it asks 6 questions and tells you which regulations might cover your flight.
+          </span>
+        </aside>
+
+        <p>
+          Some flights qualify under more than one law. For example, a JFK→CDG flight on Lufthansa falls under both EU261 (fixed €600 compensation) and the Montreal Convention (actual damages). You can claim under whichever pays more — or both, if they cover different losses.
+        </p>
+      </section>
+
+      <!-- ================================================= -->
+      <!-- STEP 3 -->
+      <!-- ================================================= -->
+      <section class="guide-step" id="step-3-letter">
+        <header class="guide-step-head">
+          <span class="guide-step-badge" aria-hidden="true">3</span>
+          <h2 class="guide-step-title">Write the Demand Letter</h2>
+        </header>
+
+        <p>
+          Your demand letter is the formal claim. Keep it short, factual, and direct. Here's a template you can adapt.
+        </p>
+
+        <div class="guide-template">
+          <div class="guide-template-head">
+            <span class="guide-template-label">Template — EU261 Compensation Demand</span>
+            <button
+              type="button"
+              class="guide-template-copy"
+              id="copy-template-btn"
+              aria-label="Copy template to clipboard"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+              </svg>
+              <span class="copy-label">Copy template</span>
+            </button>
+          </div>
+          <pre class="guide-template-body" id="template-content">{templateLetter}</pre>
+        </div>
+
+        <h3 class="guide-subsection">Tips</h3>
+        <ul>
+          <li>Replace every <strong>[BRACKETED]</strong> item with your actual details.</li>
+          <li>Use the exact compensation amount from our <a href="/">Eligibility Checker</a>.</li>
+          <li>Attach your documents — airlines often claim they "didn't receive" evidence.</li>
+          <li>Send via the airline's official complaint form, not a general support email.</li>
+          <li>Keep the tone firm but professional. Never threaten in the first letter.</li>
+        </ul>
+
+        <aside class="guide-tip-box" role="note">
+          <svg class="guide-tip-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 16v-4"/>
+            <path d="M12 8h.01"/>
+          </svg>
+          <span>
+            For UK261 claims, replace "EU Regulation 261/2004" with "Regulation (EC) No 261/2004 as retained in UK law". For APPR, cite "the Air Passenger Protection Regulations (APPR)".
+          </span>
+        </aside>
+      </section>
+
+      <!-- ================================================= -->
+      <!-- STEP 4 -->
+      <!-- ================================================= -->
+      <section class="guide-step" id="step-4-send">
+        <header class="guide-step-head">
+          <span class="guide-step-badge" aria-hidden="true">4</span>
+          <h2 class="guide-step-title">Send and Follow Up</h2>
+        </header>
+
+        <h3 class="guide-subsection">Where to send</h3>
+        <p>
+          Each airline has an official complaints page or form. Use that — not a random support email.
+        </p>
+
+        <p><strong>How to find it:</strong></p>
+        <ul>
+          <li>Go to the airline's main website</li>
+          <li>Look for <strong>Help</strong>, <strong>Contact</strong>, <strong>Customer Relations</strong>, or <strong>Feedback</strong> in the header/footer menu</li>
+          <li>Then look for <strong>EU261</strong>, <strong>Compensation</strong>, <strong>Flight Disruption</strong>, or <strong>Refunds</strong> in the submenu</li>
+          <li>Some airlines require you to use their specific EU261 form — Ryanair especially will reject any complaint not sent through their own form</li>
+        </ul>
+
+        <p><strong>Examples of airline terms to search for:</strong></p>
+        <ul>
+          <li><strong>Lufthansa:</strong> "Lufthansa feedback form" or "Lufthansa EU261"</li>
+          <li><strong>British Airways:</strong> "BA customer relations" or "BA compensation claim"</li>
+          <li><strong>Air France:</strong> "Air France claim form"</li>
+          <li><strong>KLM:</strong> "KLM complaints"</li>
+          <li><strong>Ryanair:</strong> "Ryanair EU261 form" (use Ryanair's dedicated form only)</li>
+          <li><strong>easyJet:</strong> "easyJet customer support"</li>
+        </ul>
+
+        <p>
+          For any other airline, search "[airline name] + EU261 compensation form" or "[airline name] + customer relations".
+        </p>
+
+        <h3 class="guide-subsection">Response timelines</h3>
+        <ul>
+          <li>Most airlines respond within 14-30 days</li>
+          <li>EU261/UK261: there's no strict legal deadline, but most airlines respond within 4-8 weeks. If they don't, you can escalate to the national enforcement body</li>
+          <li>APPR: airlines must respond within 30 days after they have all the documents for your claim</li>
+          <li>If silent after 30 days, send a polite follow-up</li>
+        </ul>
+
+        <h3 class="guide-subsection">If they offer vouchers or miles</h3>
+        <p>
+          Airlines often offer travel vouchers, miles, or partial cash as their first response. Under EU261, UK261, and APPR, you have the right to full cash compensation. Vouchers don't cancel out what the airline owes you.
+        </p>
+        <p>
+          <strong>Response template:</strong> "Thank you for your offer. However, EU261 grants me the right to monetary compensation under Article 7. I decline the voucher and request cash compensation of EUR [AMOUNT]."
+        </p>
+      </section>
+
+      <!-- ================================================= -->
+      <!-- STEP 5 -->
+      <!-- ================================================= -->
+      <section class="guide-step" id="step-5-escalate">
+        <header class="guide-step-head">
+          <span class="guide-step-badge" aria-hidden="true">5</span>
+          <h2 class="guide-step-title">Escalate When Denied</h2>
+        </header>
+
+        <p>
+          Airlines deny many valid claims hoping you'll give up. But most denials get reversed when you push back the right way.
+        </p>
+
+        <h3 class="guide-subsection">If the airline refuses</h3>
+        <ol>
+          <li>Read their denial letter carefully. If they claim "extraordinary circumstances," ask for specific evidence: which exact circumstance, what the airline did about it, and any documentation.</li>
+          <li>Send one more letter explaining what's wrong with their reasoning. Cite ECJ rulings that help your case — for technical issues, <em>Wallentin-Hermann v. Alitalia</em> (2008); for staff strikes, <em>Krüsemann v. TUIfly</em> (2018).</li>
+          <li>If they still refuse, escalate to the appropriate authority.</li>
+        </ol>
+
+        <h3 class="guide-subsection">Where to escalate</h3>
+        <ul>
+          <li><strong>EU flights (EU261):</strong> Your country's National Enforcement Body. Find yours at transport.ec.europa.eu/transport-modes/air/passenger-rights_en</li>
+          <li><strong>UK flights (UK261):</strong> Civil Aviation Authority at caa.co.uk/passengers, or an Alternative Dispute Resolution (ADR) body like AviationADR or CEDR</li>
+          <li><strong>Canadian flights (APPR):</strong> Canadian Transportation Agency at otc-cta.gc.ca</li>
+          <li><strong>Small claims court:</strong> Available in most countries for claims below a certain limit. The limit varies — for example, £10,000 in England/Wales; typically €5,000-€10,000 across the EU.</li>
+        </ul>
+
+        <h3 class="guide-subsection">Cost of small claims court</h3>
+        <p>
+          You usually don't need a lawyer for small claims court. Filing fees are small (typically €0-200 depending on the country — France is free for most small claims). If you win, the airline pays your costs. If you lose, you may have to pay the airline's costs. But for clear EU261 claims, the law is usually so clear that most judges will rule in your favor.
+        </p>
+        <p>
+          Many national enforcement bodies will investigate your complaint before you need to go to court. Their decisions often pressure the airline to pay without going to court.
+        </p>
+
+        <h3 class="guide-subsection">Realistic timelines</h3>
+        <ul>
+          <li>Airline response: 30-60 days</li>
+          <li>Enforcement body investigation: 3-6 months</li>
+          <li>Small claims court: 6-12 months</li>
+          <li>Total DIY process: 6-18 months in disputed cases</li>
+        </ul>
+      </section>
+
+      <!-- ================================================= -->
+      <!-- WHEN A SERVICE MAKES SENSE -->
+      <!-- ================================================= -->
+      <section class="guide-services" id="when-a-service-makes-sense">
+        <h2 class="guide-services-title">When a Service Makes Sense</h2>
+        <p class="guide-services-intro">
+          DIY works well when airlines are cooperative. But if you face any of these situations, a specialist service usually wins you the money faster and more often.
+        </p>
+
+        <ul class="guide-services-list">
+          <li>The airline has denied your claim once and you don't know how to respond</li>
+          <li>The case involves technical legal questions (extraordinary circumstances, case law)</li>
+          <li>The airline is ignoring you or responding with generic templates</li>
+          <li>You have limited time or don't want to write legal letters</li>
+          <li>The claim requires court action (most DIY claimants give up at this stage)</li>
+        </ul>
+
+        <p class="guide-services-key">
+          <strong>Key advantage:</strong> Specialist services work on a no-win, no-fee basis. If they don't recover compensation, you pay nothing. Their fee is typically 25-35% of successful payouts.
+        </p>
+
+        <div class="service-grid">
+          <a href="https://compensair.com" rel="sponsored noopener" target="_blank" class="service-card">
+            <div class="service-name">Compensair</div>
+            <div class="service-detail">
+              Quick 1–3 day confirmation<br>
+              No paperwork, no stress
+            </div>
+            <span class="service-cta">Check my claim →</span>
+          </a>
+          <a href="https://airadvisor.com" rel="sponsored noopener" target="_blank" class="service-card">
+            <div class="service-name">AirAdvisor</div>
+            <div class="service-detail">
+              Trustpilot 9.2/10 rating<br>
+              We go to court if they refuse
+            </div>
+            <span class="service-cta">Check my claim →</span>
+          </a>
+          <a href="https://www.airhelp.com" rel="sponsored noopener" target="_blank" class="service-card">
+            <div class="service-name">AirHelp</div>
+            <div class="service-detail">
+              Largest flight compensation brand<br>
+              16 languages
+            </div>
+            <span class="service-cta">Check my claim →</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- ================================================= -->
+      <!-- RELATED LINKS -->
+      <!-- ================================================= -->
+      <nav class="guide-related" aria-label="Related pages">
+        <h2 class="guide-related-title">Related</h2>
+        <ul>
+          <li>
+            <a href="/">← Back to eligibility checker</a>
+            <span class="guide-related-desc">Check if you qualify in 6 questions</span>
+          </li>
+          <li>
+            <a href="/faq">Frequently asked questions</a>
+            <span class="guide-related-desc">25 answers on EU261, UK261, APPR, and more</span>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  const btn = document.getElementById('copy-template-btn');
+  const tpl = document.getElementById('template-content');
+  if (btn && tpl) {
+    const labelEl = btn.querySelector<HTMLElement>('.copy-label');
+    const originalLabel = labelEl?.textContent ?? 'Copy template';
+
+    btn.addEventListener('click', async () => {
+      const text = (tpl.textContent ?? '').trim();
+      try {
+        await navigator.clipboard.writeText(text);
+        if (labelEl) labelEl.textContent = 'Copied!';
+        btn.classList.add('is-copied');
+        setTimeout(() => {
+          if (labelEl) labelEl.textContent = originalLabel;
+          btn.classList.remove('is-copied');
+        }, 2000);
+      } catch (e) {
+        console.warn('[guide] Clipboard write failed', e);
+        if (labelEl) labelEl.textContent = 'Press Ctrl/Cmd+C';
+        setTimeout(() => {
+          if (labelEl) labelEl.textContent = originalLabel;
+        }, 2500);
+      }
+    });
+  }
+</script>
+
+<style>
+  /* =========================================
+     HERO
+     ========================================= */
+  .guide-hero {
+    padding-block: var(--space-12) var(--space-8);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .guide-back-link {
+    display: inline-block;
+    font-size: var(--fs-sm);
+    color: var(--accent);
+    text-decoration: none;
+    margin-bottom: var(--space-4);
+  }
+
+  .guide-back-link:hover {
+    text-decoration: underline;
+  }
+
+  .guide-hero-title {
+    font-size: var(--fs-2xl);
+    font-weight: var(--fw-bold);
+    letter-spacing: -0.02em;
+    margin: 0 0 var(--space-3);
+    line-height: var(--lh-tight);
+    max-width: 28ch;
+  }
+
+  @media (min-width: 768px) {
+    .guide-hero-title {
+      font-size: var(--fs-3xl);
+    }
+  }
+
+  .guide-hero-subtitle {
+    font-size: var(--fs-base);
+    color: var(--text-secondary);
+    line-height: var(--lh-relaxed);
+    max-width: 60ch;
+    margin: 0;
+  }
+
+  @media (min-width: 768px) {
+    .guide-hero-subtitle {
+      font-size: var(--fs-lg);
+    }
+  }
+
+  /* =========================================
+     BODY LAYOUT
+     ========================================= */
+  .guide-body {
+    padding-block: var(--space-12);
+  }
+
+  .guide-body .container {
+    max-width: var(--max-width-prose);
+  }
+
+  /* =========================================
+     INTRO BOX
+     ========================================= */
+  .guide-intro-box {
+    padding: var(--space-6);
+    background-color: var(--accent-bg);
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-12);
+    font-size: var(--fs-base);
+    color: var(--text-secondary);
+    line-height: var(--lh-relaxed);
+  }
+
+  .guide-intro-box p {
+    margin: 0 0 var(--space-3);
+  }
+
+  .guide-intro-box p:last-child {
+    margin-bottom: 0;
+  }
+
+  .guide-intro-box a {
+    color: var(--accent);
+    font-weight: var(--fw-medium);
+  }
+
+  .guide-intro-box a:hover {
+    text-decoration: underline;
+  }
+
+  /* =========================================
+     STEP SECTIONS
+     ========================================= */
+  .guide-step {
+    margin-bottom: var(--space-16);
+    scroll-margin-top: var(--space-8);
+  }
+
+  .guide-step-head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-3);
+    border-bottom: 2px solid var(--accent);
+  }
+
+  .guide-step-badge {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background-color: var(--accent);
+    color: var(--text-inverse);
+    border-radius: var(--radius-full);
+    font-family: var(--font-mono);
+    font-size: var(--fs-base);
+    font-weight: var(--fw-bold);
+    letter-spacing: -0.02em;
+  }
+
+  :global([data-theme="dark"]) .guide-step-badge {
+    color: var(--bg-base);
+  }
+
+  .guide-step-title {
+    font-size: var(--fs-2xl);
+    font-weight: var(--fw-bold);
+    letter-spacing: -0.02em;
+    margin: 0;
+    line-height: var(--lh-tight);
+  }
+
+  .guide-step p {
+    color: var(--text-secondary);
+    line-height: var(--lh-relaxed);
+    margin: 0 0 var(--space-3);
+  }
+
+  .guide-step > p:last-of-type {
+    margin-bottom: 0;
+  }
+
+  .guide-step strong {
+    color: var(--text-primary);
+    font-weight: var(--fw-semibold);
+  }
+
+  .guide-step em {
+    font-style: italic;
+    color: var(--text-primary);
+  }
+
+  .guide-subsection {
+    font-size: var(--fs-base);
+    font-weight: var(--fw-semibold);
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: var(--space-8) 0 var(--space-3);
+  }
+
+  .guide-step ul,
+  .guide-step ol {
+    padding-left: var(--space-6);
+    margin: 0 0 var(--space-4);
+    color: var(--text-secondary);
+    line-height: var(--lh-relaxed);
+  }
+
+  .guide-step li {
+    margin-bottom: var(--space-2);
+  }
+
+  .guide-step ul li::marker {
+    color: var(--accent);
+  }
+
+  .guide-step ol li::marker {
+    color: var(--accent);
+    font-weight: var(--fw-semibold);
+  }
+
+  .guide-step a {
+    color: var(--accent);
+    font-weight: var(--fw-medium);
+  }
+
+  .guide-step a:hover {
+    text-decoration: underline;
+  }
+
+  /* =========================================
+     TIP BOX
+     ========================================= */
+  .guide-tip-box {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    margin: var(--space-4) 0;
+    padding: var(--space-4);
+    background-color: var(--bg-muted);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius-sm);
+    font-size: var(--fs-sm);
+    color: var(--text-secondary);
+    line-height: var(--lh-relaxed);
+  }
+
+  .guide-tip-icon {
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .guide-tip-box strong {
+    color: var(--text-primary);
+    font-weight: var(--fw-semibold);
+  }
+
+  .guide-tip-box a {
+    color: var(--accent);
+    font-weight: var(--fw-medium);
+  }
+
+  /* =========================================
+     TEMPLATE LETTER
+     ========================================= */
+  .guide-template {
+    margin: var(--space-4) 0 var(--space-6);
+    background-color: var(--bg-muted);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+
+  .guide-template-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    background-color: var(--bg-surface);
+    border-bottom: 1px solid var(--border-default);
+  }
+
+  .guide-template-label {
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-semibold);
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .guide-template-copy {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-1) var(--space-3);
+    font-family: inherit;
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-medium);
+    color: var(--accent);
+    background-color: transparent;
+    border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition:
+      background-color var(--transition-fast),
+      border-color var(--transition-fast),
+      color var(--transition-fast);
+  }
+
+  .guide-template-copy:hover {
+    background-color: var(--accent-bg);
+    border-color: var(--accent);
+  }
+
+  .guide-template-copy:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .guide-template-copy.is-copied {
+    color: var(--success);
+    border-color: var(--success);
+    background-color: var(--success-bg);
+  }
+
+  .guide-template-body {
+    margin: 0;
+    padding: var(--space-6) var(--space-5);
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    line-height: var(--lh-relaxed);
+    color: var(--text-primary);
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-x: auto;
+  }
+
+  /* =========================================
+     WHEN A SERVICE MAKES SENSE
+     ========================================= */
+  .guide-services {
+    margin-top: var(--space-16);
+    padding-top: var(--space-12);
+    border-top: 1px solid var(--border-subtle);
+    scroll-margin-top: var(--space-8);
+  }
+
+  .guide-services-title {
+    font-size: var(--fs-2xl);
+    font-weight: var(--fw-bold);
+    letter-spacing: -0.02em;
+    margin: 0 0 var(--space-3);
+    line-height: var(--lh-tight);
+  }
+
+  .guide-services-intro {
+    font-size: var(--fs-base);
+    color: var(--text-secondary);
+    line-height: var(--lh-relaxed);
+    margin: 0 0 var(--space-4);
+  }
+
+  .guide-services-list {
+    padding-left: var(--space-6);
+    margin: 0 0 var(--space-6);
+    color: var(--text-secondary);
+    line-height: var(--lh-relaxed);
+  }
+
+  .guide-services-list li {
+    margin-bottom: var(--space-2);
+  }
+
+  .guide-services-list li::marker {
+    color: var(--accent);
+  }
+
+  .guide-services-key {
+    margin: var(--space-4) 0 var(--space-6);
+    padding: var(--space-4);
+    background-color: var(--bg-muted);
+    border-radius: var(--radius-md);
+    font-size: var(--fs-sm);
+    color: var(--text-secondary);
+    line-height: var(--lh-relaxed);
+  }
+
+  .guide-services-key strong {
+    color: var(--text-primary);
+    font-weight: var(--fw-semibold);
+  }
+
+  /* Service cards — visually identical to the result-view cards. */
+  .service-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+  }
+
+  @media (min-width: 640px) {
+    .service-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .service-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-4);
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: inherit;
+    transition:
+      border-color var(--transition-fast),
+      transform var(--transition-fast),
+      box-shadow var(--transition-fast);
+  }
+
+  .service-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .service-name {
+    font-size: var(--fs-base);
+    font-weight: var(--fw-bold);
+    color: var(--text-primary);
+  }
+
+  .service-detail {
+    font-size: var(--fs-xs);
+    color: var(--text-secondary);
+    line-height: var(--lh-relaxed);
+    flex: 1;
+  }
+
+  .service-cta {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--accent);
+    margin-top: var(--space-1);
+  }
+
+  /* =========================================
+     RELATED LINKS
+     ========================================= */
+  .guide-related {
+    margin-top: var(--space-16);
+    padding-top: var(--space-8);
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .guide-related-title {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+    margin: 0 0 var(--space-4);
+  }
+
+  .guide-related ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .guide-related li {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .guide-related a {
+    font-size: var(--fs-base);
+    font-weight: var(--fw-medium);
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .guide-related a:hover {
+    text-decoration: underline;
+  }
+
+  .guide-related-desc {
+    font-size: var(--fs-sm);
+    color: var(--text-tertiary);
+  }
+</style>

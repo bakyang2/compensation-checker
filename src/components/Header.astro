@@ -2,6 +2,7 @@
 // Header.astro — 사이트 상단 네비게이션 + 다크모드 토글
 const pathname = Astro.url.pathname;
 const isHome = pathname === '/' || pathname === '';
+const isGuide = pathname.startsWith('/guide');
 const isFaq = pathname.startsWith('/faq');
 ---
 
@@ -19,6 +20,13 @@ const isFaq = pathname.startsWith('/faq');
         aria-current={isHome ? 'page' : undefined}
       >
         Home
+      </a>
+      <a
+        href="/guide"
+        class:list={['header-nav-link', isGuide && 'is-active']}
+        aria-current={isGuide ? 'page' : undefined}
+      >
+        Guide
       </a>
       <a
         href="/faq"
