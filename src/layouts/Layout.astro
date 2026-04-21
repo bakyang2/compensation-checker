@@ -55,6 +55,15 @@ const fullTitle = title === siteName ? title : `${title} — ${siteName}`;
     <meta name="theme-color" content="#FAFAFA" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0A0A0A" media="(prefers-color-scheme: dark)" />
 
+    <!-- Google Analytics 4 -->
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-RE3V4HYJWT"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-RE3V4HYJWT');
+    </script>
+
     <!-- Theme initialization — must run before body renders to avoid flash -->
     <script is:inline>
       (function () {
