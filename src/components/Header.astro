@@ -1,5 +1,8 @@
 ---
 // Header.astro — 사이트 상단 네비게이션 + 다크모드 토글
+const pathname = Astro.url.pathname;
+const isHome = pathname === '/' || pathname === '';
+const isFaq = pathname.startsWith('/faq');
 ---
 
 <header class="header">
@@ -8,6 +11,23 @@
       <span class="logo-icon" aria-hidden="true">✈</span>
       <span class="logo-text">Flight Compensation Checker</span>
     </a>
+
+    <nav class="header-nav" aria-label="Primary">
+      <a
+        href="/"
+        class:list={['header-nav-link', isHome && 'is-active']}
+        aria-current={isHome ? 'page' : undefined}
+      >
+        Home
+      </a>
+      <a
+        href="/faq"
+        class:list={['header-nav-link', isFaq && 'is-active']}
+        aria-current={isFaq ? 'page' : undefined}
+      >
+        FAQ
+      </a>
+    </nav>
 
     <button
       id="theme-toggle"
@@ -76,6 +96,49 @@
   @media (max-width: 480px) {
     .logo-text {
       font-size: var(--fs-sm);
+    }
+  }
+
+  /* Primary nav (Home / FAQ) */
+  .header-nav {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    margin-left: auto;
+    margin-right: var(--space-2);
+  }
+
+  .header-nav-link {
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    transition:
+      color var(--transition-fast),
+      background-color var(--transition-fast);
+  }
+
+  .header-nav-link:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-muted);
+    text-decoration: none;
+  }
+
+  .header-nav-link:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .header-nav-link.is-active {
+    color: var(--accent);
+  }
+
+  @media (max-width: 480px) {
+    .header-nav-link {
+      padding: var(--space-2);
+      font-size: var(--fs-xs);
     }
   }
 
