@@ -1629,7 +1629,7 @@
           activeBranch.querySelector<HTMLElement>('.ec-date-input') ||
           activeBranch.querySelector<HTMLElement>('[role="radio"][aria-checked="true"]:not([hidden])') ||
           activeBranch.querySelector<HTMLElement>('[role="radio"]:not([hidden])');
-        focusTarget?.focus();
+        focusTarget?.focus({ preventScroll: true });
       });
     };
 
