@@ -110,7 +110,7 @@
   --bg-surface: #151515;
   --bg-elevated: #1F1F1F;
   --bg-muted: #1A1A1A;
-  --bg-section: #181818;       /* 14-unit delta from base for visible section alternation */
+  --bg-section: #1D2744;       /* cool navy — luminance lift + hue contrast for mobile LCDs */
   --bg-footer: #1F1F1F;        /* elevated panel for clear distinction from body */
 
   /* Text */

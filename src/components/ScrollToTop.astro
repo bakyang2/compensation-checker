@@ -1,0 +1,131 @@
+---
+// ScrollToTop.astro — floating button that appears after the user scrolls
+// past ~400px. Click returns to the top of the page; respects
+// prefers-reduced-motion for both the fade and the scroll behavior.
+---
+
+<button
+  id="scroll-to-top"
+  type="button"
+  class="scroll-to-top"
+  aria-label="Scroll to top"
+  aria-hidden="true"
+  tabindex="-1"
+>
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <polyline points="18 15 12 9 6 15"/>
+  </svg>
+</button>
+
+<script is:inline>
+  (function () {
+    var btn = document.getElementById('scroll-to-top');
+    if (!btn) return;
+
+    var threshold = 400;
+    var ticking = false;
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function update() {
+      var show = window.scrollY > threshold;
+      btn.classList.toggle('is-visible', show);
+      btn.setAttribute('aria-hidden', show ? 'false' : 'true');
+      btn.tabIndex = show ? 0 : -1;
+      ticking = false;
+    }
+
+    window.addEventListener(
+      'scroll',
+      function () {
+        if (!ticking) {
+          requestAnimationFrame(update);
+          ticking = true;
+        }
+      },
+      { passive: true }
+    );
+
+    btn.addEventListener('click', function () {
+      window.scrollTo({
+        top: 0,
+        behavior: reduced ? 'auto' : 'smooth',
+      });
+    });
+
+    // Sync initial state in case the page loads already scrolled
+    // (anchor link, back-nav scroll restoration, etc.)
+    update();
+  })();
+</script>
+
+<style>
+  .scroll-to-top {
+    position: fixed;
+    bottom: var(--space-6);
+    right: var(--space-6);
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-inverse);
+    background-color: var(--accent);
+    border-radius: var(--radius-full);
+    box-shadow: var(--shadow-md);
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(8px);
+    transition:
+      opacity var(--transition-base),
+      transform var(--transition-base),
+      background-color var(--transition-fast);
+    z-index: 40;
+  }
+
+  :global([data-theme="dark"]) .scroll-to-top {
+    color: var(--bg-base);
+  }
+
+  .scroll-to-top.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .scroll-to-top:hover {
+    background-color: var(--accent-hover);
+  }
+
+  .scroll-to-top:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-to-top {
+      transition: opacity var(--transition-fast);
+      transform: none;
+    }
+    .scroll-to-top.is-visible {
+      transform: none;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .scroll-to-top {
+      bottom: var(--space-8);
+      right: var(--space-8);
+    }
+  }
+</style>
