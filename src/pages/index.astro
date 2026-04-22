@@ -159,6 +159,16 @@ import EligibilityChecker from '../components/EligibilityChecker.astro';
     animation: hero-breathe 6s ease-in-out infinite;
   }
 
+  /* Dark mode: brighten + extend the breathing glow.
+     Near-black page bg makes the 18% tint disappear on mobile LCDs. */
+  :global([data-theme="dark"]) .hero::after {
+    background: radial-gradient(
+      ellipse 80% 60% at 50% 0%,
+      color-mix(in srgb, var(--accent) 35%, transparent) 0%,
+      transparent 85%
+    );
+  }
+
   .hero > * {
     position: relative;
     z-index: 1;

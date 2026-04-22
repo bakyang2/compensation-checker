@@ -235,6 +235,17 @@ code,
   z-index: 0;
 }
 
+/* Dark mode: --accent-bg sits too close to --bg-base in luminance,
+   so the static glow disappears on mobile LCDs. Swap to a live
+   accent mix with enough opacity to register. */
+[data-theme="dark"] .bg-glow::before {
+  background: radial-gradient(
+    ellipse at 50% 0%,
+    color-mix(in srgb, var(--accent) 22%, transparent) 0%,
+    transparent 70%
+  );
+}
+
 .bg-glow > * {
   position: relative;
   z-index: 1;
