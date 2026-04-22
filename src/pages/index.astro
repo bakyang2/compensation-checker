@@ -8,7 +8,8 @@ import EligibilityChecker from '../components/EligibilityChecker.astro';
   description="Was your flight delayed or cancelled? Check if you're owed up to €600 under EU261, UK261, APPR and more. Free, instant, no signup."
 >
   <!-- HERO -->
-  <section class="hero bg-grid bg-grid-masked bg-glow">
+  <section class="hero bg-glow">
+    <div class="hero-bg-grid bg-grid bg-grid-masked" aria-hidden="true"></div>
     <div class="container hero-inner">
       <h1 class="hero-title">Flight Compensation Checker</h1>
       <p class="hero-tagline">
@@ -161,6 +162,16 @@ import EligibilityChecker from '../components/EligibilityChecker.astro';
   .hero > * {
     position: relative;
     z-index: 1;
+  }
+
+  /* Dedicated layer for the masked grid background.
+     Separated from .hero so mask-image clips only the grid,
+     not the hero's text children. */
+  .hero > .hero-bg-grid {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
   }
 
   @keyframes hero-breathe {
