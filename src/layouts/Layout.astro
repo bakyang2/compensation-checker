@@ -55,13 +55,41 @@ const fullTitle = title === siteName ? title : `${title} — ${siteName}`;
     <meta name="theme-color" content="#FAFAFA" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0A0A0A" media="(prefers-color-scheme: dark)" />
 
-    <!-- Google Analytics 4 -->
-    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-RE3V4HYJWT"></script>
+    <!-- Google Analytics 4 (deferred until first interaction or 3s idle) -->
     <script is:inline>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-RE3V4HYJWT');
+      (function() {
+        var GA_ID = 'G-RE3V4HYJWT';
+        var loaded = false;
+
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        window.gtag = gtag;
+
+        function loadGA() {
+          if (loaded) return;
+          loaded = true;
+
+          var script = document.createElement('script');
+          script.async = true;
+          script.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+          document.head.appendChild(script);
+
+          gtag('js', new Date());
+          gtag('config', GA_ID);
+        }
+
+        // Load on first interaction
+        ['scroll', 'mousedown', 'keydown', 'touchstart'].forEach(function(evt) {
+          window.addEventListener(evt, loadGA, { once: true, passive: true });
+        });
+
+        // Fallback: load after 3s idle
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(loadGA, { timeout: 3000 });
+        } else {
+          setTimeout(loadGA, 3000);
+        }
+      })();
     </script>
 
     <!-- Theme initialization — must run before body renders to avoid flash -->
